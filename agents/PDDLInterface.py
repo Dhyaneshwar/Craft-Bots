@@ -11,7 +11,7 @@ class PDDLInterface:
     # Function to write a problem file
     # Complete this function
 
-    def writeProblem(world_info, file="agents/problem.pddl"):
+    def writeProblem(world_info, file="pddl/problem.pddl"):
         # Function that will
 
         with open(file, "w") as f:
@@ -63,6 +63,6 @@ class PDDLInterface:
         return True
 
 if __name__ == '__main__':
-    PDDLInterface.generatePlan("domain-craft-bots.pddl", "problem.pddl", "plan.pddl", verbose=True)
-    plan = PDDLInterface.readPDDLPlan('plan.pddl')
+    PDDLInterface.generatePlan("pddl/domain-craft-bots.pddl", "pddl/problem.pddl", "pddl/plan.pddl", verbose=True)
+    plan = PDDLInterface.readPDDLPlan('pddl/plan.pddl')
     print(plan)

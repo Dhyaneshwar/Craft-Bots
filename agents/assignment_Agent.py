@@ -40,7 +40,7 @@ class Assignment_Agent(Agent):
         PDDLInterface.writeProblem(world_info=self.world_info)
 
         # Now try to generate a plan
-        PDDLInterface.generatePlan("agents/domain-craft-bots.pddl", "agents/problem.pddl", "agents/plan.pddl", verbose=True)
+        PDDLInterface.generatePlan("pddl/domain-craft-bots.pddl", "pddl/problem.pddl", "pddl/plan.pddl", verbose=True)
         
 
     # A more complete version, which only creates a plan etc if needed
@@ -76,10 +76,10 @@ class Assignment_Agent(Agent):
                 PDDLInterface.writeProblem(world_info=self.world_info)
 
                 # Now generate a plan
-                PDDLInterface.generatePlan("agents/domain-craft-bots.pddl", "agents/problem.pddl", "agents/plan.pddl", verbose=True)
+                PDDLInterface.generatePlan("pddl/domain-craft-bots.pddl", "pddl/problem.pddl", "pddl/plan.pddl", verbose=True)
 
                 # Read the plan (completed)
-                self.plan = PDDLInterface.readPDDLPlan('agents/plan.pddl')
+                self.plan = PDDLInterface.readPDDLPlan('pddl/plan.pddl')
 
                 # Set agent to be executing a plan
                 self.state = Assignment_Agent.STATE.EXECUTING
