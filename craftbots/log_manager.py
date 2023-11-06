@@ -22,7 +22,7 @@ class Logger:
                 for i in range( (world.last_id + 1) - total_number_of_mines):
                     log.write(f'{i}--{world.get_by_id(i)} \n')
                 log.write(f'{(world.last_id + 1) - total_number_of_mines} to {world.last_id} are mines: [red, blue, orange, black and green] \n')
-
+                log.write(f'-------------------------------------------------------------\n\n')
 
     @staticmethod
     def info(sender: str, message: str):

@@ -1,6 +1,7 @@
 from collections.abc import Set
 from typing import List, Tuple, Union
 import requests
+import json 
 
 class PDDLInterface:
 
@@ -12,7 +13,9 @@ class PDDLInterface:
     # Complete this function
 
     def writeProblem(world_info, file="pddl/problem.pddl"):
-        # Function that will
+        # Store the detailed world information in world_info.txt file
+        with open("pddl/world_info.txt", "w") as f:        
+            f.write(json.dumps(world_info, indent = 6))
 
         with open(file, "w") as f:
 
