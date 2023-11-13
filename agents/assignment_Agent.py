@@ -1,5 +1,8 @@
 import random
 import time
+# set the root path to the project folder
+import sys
+sys.path.append('./')
 
 from agents.PDDLInterface import PDDLInterface
 from api import agent_api
@@ -122,4 +125,36 @@ class Assignment_Agent(Agent):
     # receives actions and params, 
     def send_action(self, action, params):
         # To be completed
-        print('no actions work yet!')
+        # print('no actions work yet!')
+
+        if action == 'move':
+            self.api.move_to(params[0], params[2])
+
+        elif action == 'create-site':
+            for task in self.world_info['tasks'].values():
+                if task['node'] == params[1]:
+                    self.api.start_site(params[0], task['id'])
+                    break
+
+        elif action == 'dig':
+            self.api.dig_at(params[0], params[1])
+
+        elif action == 'pick-up':
+            for resource in self.world_info['resources'].values():
+                if resource['location'] == params[1] and resource['colour'] == params[2]:
+                    self.api.pick_up_resource(params[0], resource['id'])
+
+        elif action == 'deposit':
+            for task in self.world_info['tasks'].values():
+                if task['node'] == params[1]:
+                    for resource in self.world_info['resources'].values():
+                        if resource['location'] == params[0] and resource['colour'] == params[2]:
+                            self.api.deposit_resources(params[0], task['site'], resource['id'])
+
+        elif action == 'construct':
+            for task in self.world_info['tasks'].values():
+                if task['node'] == params[1]:
+                    self.api.construct_at(params[0], task['site'])
+
+        else:
+            print('Invalid action')
