@@ -5,7 +5,7 @@
     (:requirements :strips :typing :numeric-fluents :negative-preconditions)
 
     (:types
-        actor node resource building site mine edge task color - object
+        actor node mine task color - object
     )
 
     (:predicates
