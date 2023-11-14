@@ -18,8 +18,10 @@ class PDDLInterface:
         # Function that will write the problem file
         # write a simple config that will create 10 randomly generated nodes, and 6 fixed tasks (again, randomly generated).
         # Each task will require a different number of resources to solve
-
+        actors = world_info['actors'].values()
+        tasks = world_info['tasks'].values()
         spaceHandler = SpaceHandler()
+        
         with open(file, "w") as file:
 
             file.write("(define(problem craft-bots-prob)")
@@ -49,16 +51,16 @@ class PDDLInterface:
 
             file.write("(:init" + spaceHandler.newline)
 
-            # setting the initial node for each actor
+            file.write("    ;; setting the initial node for each actor\n")
             for actor in world_info['actors'].values():
                 actor_id = actor['id']
                 actor_node = actor['node']
                 file.write(spaceHandler.tab)
                 file.write(f"(alocation a{str(actor_id)} n{str(actor_node)})")
                 file.write(spaceHandler.newline)
-
-            # setting the connection between each nodes
             file.write(spaceHandler.newline)
+
+            file.write("    ;; setting the connection between each nodes\n")
             for edge in world_info['edges'].values():
                 node_A = str(edge['node_a'])
                 node_B = str(edge['node_b'])
@@ -67,45 +69,58 @@ class PDDLInterface:
                 file.write(spaceHandler.tab)
                 file.write(f"(connected n{node_B} n{node_A})")
                 file.write(spaceHandler.newline)
-
-            # setting the initial mines location
             file.write(spaceHandler.newline)
+
+            file.write("    ;; setting the mines details\n")
             for mine in world_info['mines'].values():
                 mine_id = str(mine['id'])
                 mine_node = str(mine['node'])
                 mine_color = PDDLInterface.COLOURS[mine['colour']]
                 file.write(spaceHandler.tab)
                 file.write(f"(mine_detail m{mine_id} n{mine_node} {mine_color})" + spaceHandler.newline)
-
-            # set the variables not_created_site, not_carrying, not_deposited
             file.write(spaceHandler.newline)
-            for task in world_info['tasks'].values():
-                if not world_info['tasks'][task['id']]['completed']:
-                    for actor in world_info['actors'].values():  
-                        actor_id = str(actor['id'])
-                        task_node = str(task['node'])
-                        for color in PDDLInterface.COLOURS:
-                            file.write(spaceHandler.tab)
-                            file.write(f"(not_carrying a{actor_id} {color})" + spaceHandler.newline)
-                            file.write(spaceHandler.tab)
-                            file.write(f"(not_deposited a{actor_id} {color} n{task_node})" + spaceHandler.newline)
-                        file.write(spaceHandler.newline)
-                    break
-                        
-            for task in world_info['tasks'].values():
-                if not world_info['tasks'][task['id']]['completed']:
-                    file.write(spaceHandler.tab)
-                    file.write(f"(not_created_site n{str(task['node'])})" + spaceHandler.newline)
-                    break
 
-            for task in world_info['tasks'].values():
-                if not world_info['tasks'][task['id']]['completed']:
+            file.write("    ;; set the variables not_created_site\n")
+            for task in tasks:
+                task_id = str(task['id'])
+                task_node = str(task['node'])
+
+                file.write(spaceHandler.tab)
+                file.write(f"(not_created_site n{task_node} t{task_id})" + spaceHandler.newline)
+            file.write(spaceHandler.newline)
+
+            file.write("    ;; set the variables not_carrying\n")
+            for actor in actors:  
+                actor_id = str(actor['id'])
+                for color in PDDLInterface.COLOURS:
+                    file.write(spaceHandler.tab)
+                    file.write(f"(not_carrying a{actor_id} {color})" + spaceHandler.newline)
+                file.write(spaceHandler.newline)
+            file.write(spaceHandler.newline)
+
+            file.write("    ;; set the variables not_deposited\n")
+            for task in tasks:
+                task_id = str(task['id'])
+                task_node = str(task['node'])
+                for actor in actors:  
+                    actor_id = str(actor['id'])
                     for index, color in enumerate(PDDLInterface.COLOURS):
-                        num_needed = task['needed_resources'][index]
-                        if num_needed > 0:
-                            file.write(spaceHandler.tab)
-                            file.write('(= (color_count' + spaceHandler.space + str(color) + spaceHandler.space + 'n' + str(task['node']) + ')' + spaceHandler.space + str(num_needed) + ')' + spaceHandler.newline)
-                    break
+                        file.write(spaceHandler.tab)
+                        file.write(f"(not_deposited a{actor_id} t{task_id} {color} n{task_node})" + spaceHandler.newline)
+                    file.write(spaceHandler.newline)
+            file.write(spaceHandler.newline)
+                        
+            file.write("    ;; set the color_count function\n")
+            for task in tasks:
+                for index, color in enumerate(PDDLInterface.COLOURS):
+                    resource_needed = task['needed_resources'][index]
+                    task_id = str(task['id'])
+                    task_node = str(task['node'])
+
+                    if resource_needed > 0:
+                        file.write(spaceHandler.tab)
+                        file.write(f"(= (color_count t{task_id} {color} n{task_node}) {str(resource_needed)})" + spaceHandler.newline)
+
 
             file.write(spaceHandler.close_paren)
             file.write(spaceHandler.newline * 2)
@@ -115,17 +130,15 @@ class PDDLInterface:
             file.write("(:goal" + spaceHandler.newline)
             file.write(spaceHandler.tab + '(and' + spaceHandler.newline)
 
-            # fetch the tasks from the world info
-            for task in world_info['tasks'].values():
-                if not world_info['tasks'][task['id']]['completed']:
-                    for index, color in enumerate(PDDLInterface.COLOURS):
-                        num_needed = task['needed_resources'][index]
-                        if num_needed > 0:
-                            file.write(spaceHandler.tab * 2)
-                            file.write('(= (color_count' + spaceHandler.space + str(color) + spaceHandler.space + 'n' + str(task['node']) + ')' + spaceHandler.space + str(0) + ')' + spaceHandler.newline)
-                            # break
-                        # break
-                    break
+            for task in tasks:
+                for index, color in enumerate(PDDLInterface.COLOURS):
+                    resource_needed = task['needed_resources'][index]
+                    task_id = str(task['id'])
+                    task_node = str(task['node'])
+
+                    if resource_needed > 0:
+                        file.write(spaceHandler.tab * 2)
+                        file.write(f"(= (color_count t{task_id} {color} n{task_node}) 0)" + spaceHandler.newline)
 
             file.write(")))" + spaceHandler.newline)
 
