@@ -56,7 +56,7 @@ class PDDLInterface:
                 actor_id = actor['id']
                 actor_node = actor['node']
                 file.write(spaceHandler.tab)
-                file.write(f"(alocation a{str(actor_id)} n{str(actor_node)})")
+                file.write(f"(actor_location a{str(actor_id)} n{str(actor_node)})")
                 file.write(spaceHandler.newline)
             file.write(spaceHandler.newline)
 
@@ -110,7 +110,7 @@ class PDDLInterface:
                     file.write(spaceHandler.newline)
             file.write(spaceHandler.newline)
                         
-            file.write("    ;; set the color_count function\n")
+            file.write("    ;; set the resource_count function\n")
             for task in tasks:
                 for index, color in enumerate(PDDLInterface.COLOURS):
                     resource_needed = task['needed_resources'][index]
@@ -119,7 +119,7 @@ class PDDLInterface:
 
                     if resource_needed > 0:
                         file.write(spaceHandler.tab)
-                        file.write(f"(= (color_count t{task_id} {color} n{task_node}) {str(resource_needed)})" + spaceHandler.newline)
+                        file.write(f"(= (resource_count t{task_id} {color} n{task_node}) {str(resource_needed)})" + spaceHandler.newline)
 
 
             file.write(spaceHandler.close_paren)
@@ -138,7 +138,7 @@ class PDDLInterface:
 
                     if resource_needed > 0:
                         file.write(spaceHandler.tab * 2)
-                        file.write(f"(= (color_count t{task_id} {color} n{task_node}) 0)" + spaceHandler.newline)
+                        file.write(f"(= (resource_count t{task_id} {color} n{task_node}) 0)" + spaceHandler.newline)
 
             file.write(")))" + spaceHandler.newline)
 
