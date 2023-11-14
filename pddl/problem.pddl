@@ -3,139 +3,94 @@
 (:domain craft-bots)
 
 (:objects
-	a27 a26 a28 - actor
-	t23 t24 t25 - task
-	n0 n1 n3 n5 n7 n10 n12 n15 n17 n20 - node
-	m33 m29 m30 m31 m32 - mine
+	a23 a21 a22 - actor
+	t18 t19 t20 - task
+	n0 n1 n3 n5 n7 n9 n12 n15 - node
+	m25 m24 m27 m28 m26 - mine
 	red blue orange black green - color
 )
 
 (:init
     ;; setting the initial node for each actor
-	(actor_location a27 n17)
-	(actor_location a26 n20)
-	(actor_location a28 n20)
+	(actor_location a23 n1)
+	(actor_location a21 n3)
+	(actor_location a22 n5)
 
     ;; setting the connection between each nodes
 	(connected n1 n0)	(connected n0 n1)
 	(connected n3 n1)	(connected n1 n3)
-	(connected n17 n1)	(connected n1 n17)
 	(connected n5 n3)	(connected n3 n5)
-	(connected n7 n3)	(connected n3 n7)
 	(connected n7 n5)	(connected n5 n7)
-	(connected n10 n7)	(connected n7 n10)
+	(connected n9 n5)	(connected n5 n9)
+	(connected n9 n7)	(connected n7 n9)
 	(connected n12 n7)	(connected n7 n12)
-	(connected n12 n10)	(connected n10 n12)
+	(connected n12 n9)	(connected n9 n12)
+	(connected n15 n9)	(connected n9 n15)
 	(connected n15 n12)	(connected n12 n15)
-	(connected n17 n15)	(connected n15 n17)
-	(connected n20 n15)	(connected n15 n20)
-	(connected n20 n17)	(connected n17 n20)
 
     ;; setting the mines details
-	(mine_detail m33 n0 green)
-	(mine_detail m29 n5 red)
-	(mine_detail m30 n5 blue)
-	(mine_detail m31 n7 orange)
-	(mine_detail m32 n7 black)
+	(mine_detail m25 n1 blue)
+	(mine_detail m24 n5 red)
+	(mine_detail m27 n5 black)
+	(mine_detail m28 n5 green)
+	(mine_detail m26 n9 orange)
 
-    ;; set the variables not_created_site
-	(not_created_site n7 t23)
-	(not_created_site n17 t24)
-	(not_created_site n5 t25)
+    ;; set the variables site_not_created
+	(site_not_created n9 t18)
+	(site_not_created n5 t19)
+	(site_not_created n3 t20)
 
     ;; set the variables not_carrying
-	(not_carrying a27 red)
-	(not_carrying a27 blue)
-	(not_carrying a27 orange)
-	(not_carrying a27 black)
-	(not_carrying a27 green)
+	(not_carrying a23 red)
+	(not_carrying a23 blue)
+	(not_carrying a23 orange)
+	(not_carrying a23 black)
+	(not_carrying a23 green)
 
-	(not_carrying a26 red)
-	(not_carrying a26 blue)
-	(not_carrying a26 orange)
-	(not_carrying a26 black)
-	(not_carrying a26 green)
+	(not_carrying a21 red)
+	(not_carrying a21 blue)
+	(not_carrying a21 orange)
+	(not_carrying a21 black)
+	(not_carrying a21 green)
 
-	(not_carrying a28 red)
-	(not_carrying a28 blue)
-	(not_carrying a28 orange)
-	(not_carrying a28 black)
-	(not_carrying a28 green)
-
-
-    ;; set the variables not_deposited
-	(not_deposited a27 t23 red n7)
-	(not_deposited a27 t23 blue n7)
-	(not_deposited a27 t23 orange n7)
-	(not_deposited a27 t23 black n7)
-	(not_deposited a27 t23 green n7)
-
-	(not_deposited a26 t23 red n7)
-	(not_deposited a26 t23 blue n7)
-	(not_deposited a26 t23 orange n7)
-	(not_deposited a26 t23 black n7)
-	(not_deposited a26 t23 green n7)
-
-	(not_deposited a28 t23 red n7)
-	(not_deposited a28 t23 blue n7)
-	(not_deposited a28 t23 orange n7)
-	(not_deposited a28 t23 black n7)
-	(not_deposited a28 t23 green n7)
-
-	(not_deposited a27 t24 red n17)
-	(not_deposited a27 t24 blue n17)
-	(not_deposited a27 t24 orange n17)
-	(not_deposited a27 t24 black n17)
-	(not_deposited a27 t24 green n17)
-
-	(not_deposited a26 t24 red n17)
-	(not_deposited a26 t24 blue n17)
-	(not_deposited a26 t24 orange n17)
-	(not_deposited a26 t24 black n17)
-	(not_deposited a26 t24 green n17)
-
-	(not_deposited a28 t24 red n17)
-	(not_deposited a28 t24 blue n17)
-	(not_deposited a28 t24 orange n17)
-	(not_deposited a28 t24 black n17)
-	(not_deposited a28 t24 green n17)
-
-	(not_deposited a27 t25 red n5)
-	(not_deposited a27 t25 blue n5)
-	(not_deposited a27 t25 orange n5)
-	(not_deposited a27 t25 black n5)
-	(not_deposited a27 t25 green n5)
-
-	(not_deposited a26 t25 red n5)
-	(not_deposited a26 t25 blue n5)
-	(not_deposited a26 t25 orange n5)
-	(not_deposited a26 t25 black n5)
-	(not_deposited a26 t25 green n5)
-
-	(not_deposited a28 t25 red n5)
-	(not_deposited a28 t25 blue n5)
-	(not_deposited a28 t25 orange n5)
-	(not_deposited a28 t25 black n5)
-	(not_deposited a28 t25 green n5)
+	(not_carrying a22 red)
+	(not_carrying a22 blue)
+	(not_carrying a22 orange)
+	(not_carrying a22 black)
+	(not_carrying a22 green)
 
 
     ;; set the resource_count function
-	(= (resource_count t23 red n7) 1)
-	(= (resource_count t23 blue n7) 2)
-	(= (resource_count t23 orange n7) 1)
-	(= (resource_count t23 black n7) 1)
-	(= (resource_count t23 green n7) 1)
-	(= (resource_count t24 red n17) 1)
-	(= (resource_count t25 red n5) 2)
+	(= (total_resource_required t20 n3) 4)
+	(= (resource_count t18 red n9) 2)
+	(= (resource_count t18 blue n9) 0)
+	(= (resource_count t18 orange n9) 0)
+	(= (resource_count t18 black n9) 2)
+	(= (resource_count t18 green n9) 0)
+
+	(= (total_resource_required t18 n9) 5)
+	(= (resource_count t19 red n5) 1)
+	(= (resource_count t19 blue n5) 1)
+	(= (resource_count t19 orange n5) 2)
+	(= (resource_count t19 black n5) 1)
+	(= (resource_count t19 green n5) 0)
+
+	(= (total_resource_required t19 n5) 4)
+	(= (resource_count t20 red n3) 1)
+	(= (resource_count t20 blue n3) 2)
+	(= (resource_count t20 orange n3) 0)
+	(= (resource_count t20 black n3) 0)
+	(= (resource_count t20 green n3) 1)
+
+
+	(= (total_resource_in_inventory a23) 0)
+	(= (total_resource_in_inventory a21) 0)
+	(= (total_resource_in_inventory a22) 0)
 )
 
 (:goal
 	(and
-		(= (resource_count t23 red n7) 0)
-		(= (resource_count t23 blue n7) 0)
-		(= (resource_count t23 orange n7) 0)
-		(= (resource_count t23 black n7) 0)
-		(= (resource_count t23 green n7) 0)
-		(= (resource_count t24 red n17) 0)
-		(= (resource_count t25 red n5) 0)
+		(building_built t18 n9)
+		(building_built t19 n5)
+		(building_built t20 n3)
 )))

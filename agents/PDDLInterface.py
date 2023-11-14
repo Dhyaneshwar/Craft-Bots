@@ -20,6 +20,10 @@ class PDDLInterface:
         # Each task will require a different number of resources to solve
         actors = world_info['actors'].values()
         tasks = world_info['tasks'].values()
+
+        with open('./pddl/world_info.txt', "w") as fiel:
+            json.dump(world_info, fiel, indent=4)
+
         spaceHandler = SpaceHandler()
         
         with open(file, "w") as file:
@@ -80,13 +84,13 @@ class PDDLInterface:
                 file.write(f"(mine_detail m{mine_id} n{mine_node} {mine_color})" + spaceHandler.newline)
             file.write(spaceHandler.newline)
 
-            file.write("    ;; set the variables not_created_site\n")
+            file.write("    ;; set the variables site_not_created\n")
             for task in tasks:
                 task_id = str(task['id'])
                 task_node = str(task['node'])
 
                 file.write(spaceHandler.tab)
-                file.write(f"(not_created_site n{task_node} t{task_id})" + spaceHandler.newline)
+                file.write(f"(site_not_created n{task_node} t{task_id})" + spaceHandler.newline)
             file.write(spaceHandler.newline)
 
             file.write("    ;; set the variables not_carrying\n")
@@ -97,30 +101,31 @@ class PDDLInterface:
                     file.write(f"(not_carrying a{actor_id} {color})" + spaceHandler.newline)
                 file.write(spaceHandler.newline)
             file.write(spaceHandler.newline)
-
-            file.write("    ;; set the variables not_deposited\n")
-            for task in tasks:
-                task_id = str(task['id'])
-                task_node = str(task['node'])
-                for actor in actors:  
-                    actor_id = str(actor['id'])
-                    for index, color in enumerate(PDDLInterface.COLOURS):
-                        file.write(spaceHandler.tab)
-                        file.write(f"(not_deposited a{actor_id} t{task_id} {color} n{task_node})" + spaceHandler.newline)
-                    file.write(spaceHandler.newline)
-            file.write(spaceHandler.newline)
                         
             file.write("    ;; set the resource_count function\n")
             for task in tasks:
+                resource_list = task['needed_resources']
+
+                file.write(spaceHandler.tab)
+                file.write(f"(= (total_resource_required t{task_id} n{task_node}) {str(sum(resource_list))})")
+                file.write(spaceHandler.newline)
+
                 for index, color in enumerate(PDDLInterface.COLOURS):
-                    resource_needed = task['needed_resources'][index]
+                    resource_needed = resource_list[index]
                     task_id = str(task['id'])
                     task_node = str(task['node'])
 
-                    if resource_needed > 0:
-                        file.write(spaceHandler.tab)
-                        file.write(f"(= (resource_count t{task_id} {color} n{task_node}) {str(resource_needed)})" + spaceHandler.newline)
+                    file.write(spaceHandler.tab)
+                    file.write(f"(= (resource_count t{task_id} {color} n{task_node}) {str(resource_needed)})")
+                    file.write(spaceHandler.newline)
+                file.write(spaceHandler.newline)
 
+            file.write(spaceHandler.newline)
+            for actor in actors:
+                actor_id = actor['id']
+                file.write(spaceHandler.tab)
+                file.write(f"(= (total_resource_in_inventory a{actor_id}) 0)")
+                file.write(spaceHandler.newline)
 
             file.write(spaceHandler.close_paren)
             file.write(spaceHandler.newline * 2)
@@ -131,14 +136,11 @@ class PDDLInterface:
             file.write(spaceHandler.tab + '(and' + spaceHandler.newline)
 
             for task in tasks:
-                for index, color in enumerate(PDDLInterface.COLOURS):
-                    resource_needed = task['needed_resources'][index]
-                    task_id = str(task['id'])
-                    task_node = str(task['node'])
+                task_id = str(task['id'])
+                task_node = str(task['node'])
 
-                    if resource_needed > 0:
-                        file.write(spaceHandler.tab * 2)
-                        file.write(f"(= (resource_count t{task_id} {color} n{task_node}) 0)" + spaceHandler.newline)
+                file.write(spaceHandler.tab * 2)
+                file.write(f"(building_built t{task_id} n{task_node})" + spaceHandler.newline)
 
             file.write(")))" + spaceHandler.newline)
 
