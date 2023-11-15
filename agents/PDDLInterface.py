@@ -3,6 +3,7 @@ from typing import List, Tuple, Union
 import requests
 import json 
 from agents.space_handler import SpaceHandler
+import subprocess
 
 class PDDLInterface:
 
@@ -177,16 +178,33 @@ class PDDLInterface:
     @staticmethod
     # Completed already
     def generatePlan(domain: str, problem: str, plan: str, verbose=False):
-        data = {'domain': open(domain, 'r').read(), 'problem': open(problem, 'r').read()}
-        resp = requests.post('https://popf-cloud-solver.herokuapp.com/solve', verify=True, json=data).json()
-        if not 'plan' in resp['result']:
-            if verbose:
-                print("WARN: Plan was not found!")
-                print(resp)
+        # data = {'domain': open(domain, 'r').read(), 'problem': open(problem, 'r').read()}
+        # resp = requests.post('https://popf-cloud-solver.herokuapp.com/solve', verify=True, json=data).json()
+        # if not 'plan' in resp['result']:
+        #     if verbose:
+        #         print("WARN: Plan was not found!")
+        #         print(resp)
+        #     return False
+        # with open(plan, 'w') as f:
+        #     f.write(''.join([act for act in resp['result']['plan']]))
+        # f.close()
+
+        optic_path = '/home/mlb23172/bin/optic-cplex'
+        process = subprocess.run([f'{optic_path}', '-N', f'{domain}', f'{problem}'], stdout=subprocess.PIPE)
+
+        process = str(process)
+        start_index = process.rindex('Solution Found')
+
+        if start_index == -1:
             return False
-        with open(plan, 'w') as f:
-            f.write(''.join([act for act in resp['result']['plan']]))
-        f.close()
+
+        trimmed_response = process[start_index:-2]
+        trimmed_response_list = trimmed_response.split('\\n')[4:]
+        filtered_list = '\n'.join(list(filter(lambda x: x != "", trimmed_response_list)))
+
+        with open(plan, "w") as file:
+            file.write(filtered_list)
+
         return True
 
 if __name__ == '__main__':
