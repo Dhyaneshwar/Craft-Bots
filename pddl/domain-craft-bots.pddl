@@ -2,7 +2,7 @@
 
 (define (domain craft-bots)
 
-    (:requirements :strips :typing :numeric-fluents :negative-preconditions)
+    (:requirements :strips :typing :numeric-fluents :negative-preconditions :disjunctive-preconditions)
 
     (:types
         actor node mine task color - object
@@ -10,6 +10,8 @@
 
     (:predicates
         (actor_location ?a - actor ?l - node)
+        (is_not_working ?a - actor)
+        (is_working ?a - actor ?t - task)
         (connected ?l1 - node ?l2 - node)
 
         (mine_detail ?m - mine ?l - node ?c - color)
@@ -24,10 +26,11 @@
         (deposited ?a - actor ?c - color ?l - node)
 
         (building_built ?t - task ?l - node)
+        (building_not_built ?t - task ?l - node)
     )
 
     (:functions
-        (resource_count ?t - task ?c - color ?l - node)
+        (resource_count ?t - task ?c - color)
         (total_resource_required ?t - task ?l - node)
         (total_resource_in_inventory ?a - actor)
     )
@@ -47,24 +50,45 @@
 
     ;; when the agent is at a node that contains a mine, the agent produces one resource of the mine's resource type. Then the resource appears on the ground at that node
     (:action mine_resource
-        :parameters (?a - actor ?m - mine ?l - node ?c - color)
+        :parameters (?a - actor ?m - mine ?l - node ?c - color ?t - task)
         :precondition (and 
             (actor_location ?a ?l) 
             (mine_detail ?m ?l ?c)
+            (is_not_working ?a)
+            (> (resource_count ?t ?c) 0)
         )
         :effect (and 
+            (not (is_not_working ?a))
+            (is_working ?a ?t)
+            (resource_location ?l ?c)
+        )
+    )
+
+    (:action mine_resource_for_task
+        :parameters (?a - actor ?m - mine ?l - node ?c - color ?t - task)
+        :precondition (and 
+            (actor_location ?a ?l) 
+            (mine_detail ?m ?l ?c)
+            (is_working ?a ?t)
+            (> (resource_count ?t ?c) 0)
+        )
+        :effect (and 
+            (not (is_not_working ?a))
+            (is_working ?a ?t)
             (resource_location ?l ?c)
         )
     )
 
     ;; agent collects a resource on the ground in the same node and adds it to the agent's inventory
     (:action pick_up_resource
-        :parameters (?a - actor ?l - node ?c - color)
+        :parameters (?a - actor ?l - node ?c - color  ?t - task)
         :precondition (and 
             (actor_location ?a ?l) 
             (resource_location ?l ?c) 
             (not_carrying ?a ?c)
-            (<= (total_resource_in_inventory ?a) 3)
+            (is_working ?a ?t)
+            (> (resource_count ?t ?c) 0)
+            (<= (total_resource_in_inventory ?a) 5)
         )
         :effect (and 
             (not (not_carrying ?a ?c))
@@ -83,7 +107,6 @@
     ;     )
     ;     :effect (and 
     ;         (resource_location ?l ?c)
-    ;         (not_deposited ?a ?c ?l)
     ;         (not_carrying ?a ?c)
     ;         (not (carrying ?a ?c))
     ;         (decrease (total_resource_in_inventory ?a) 1)
@@ -96,6 +119,7 @@
         :precondition (and 
             (actor_location ?a ?l) 
             (site_not_created ?l ?t)
+            (is_working ?a ?t)
         )
         :effect (and 
             (create_site ?l ?t) 
@@ -111,15 +135,17 @@
             (actor_location ?a ?l) 
             (create_site ?l ?t)
             (carrying ?a ?c)
-            (>= (total_resource_in_inventory ?a) 1)
-            (> (resource_count ?t ?c ?l) 0)
+            (is_working ?a ?t)
+            (> (total_resource_in_inventory ?a) 0)
+            (> (resource_count ?t ?c) 0)
+            (> (total_resource_required ?t ?l) 0)
         )
         :effect (and 
             (deposited ?a ?c ?l) 
             (not_carrying ?a ?c)
             (not (carrying ?a ?c)) 
             (decrease (total_resource_in_inventory ?a) 1)
-            (decrease (resource_count ?t ?c ?l) 1)
+            (decrease (resource_count ?t ?c) 1)
             (decrease (total_resource_required ?t ?l) 1)
         )
     )
@@ -129,12 +155,17 @@
     (:action construct_building
         :parameters (?a - actor ?t - task ?l - node)
         :precondition (and 
+            (is_working ?a ?t)
             (create_site ?l ?t) 
             (actor_location ?a ?l) 
             (= (total_resource_required ?t ?l) 0)
+            (building_not_built ?t ?l)
         )
         :effect (and 
+            (not (building_not_built ?t ?l))
             (building_built ?t ?l)
+            (not (is_working ?a ?t))
+            (is_not_working ?a)
         )
     )
 )

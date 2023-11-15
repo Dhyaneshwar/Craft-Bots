@@ -56,14 +56,24 @@ class PDDLInterface:
             file.write("(:init" + spaceHandler.newline)
 
             file.write("    ;; setting the initial node for each actor\n")
-            for actor in world_info['actors'].values():
-                actor_id = actor['id']
-                actor_node = actor['node']
-                file.write(spaceHandler.tab)
-                file.write(f"(actor_location a{str(actor_id)} n{str(actor_node)})")
-                file.write(spaceHandler.newline)
-            file.write(spaceHandler.newline)
+            for actor in actors:
+                actor_id = str(actor['id'])
+                actor_node = str(actor['node'])
 
+                file.write(spaceHandler.tab)
+                file.write(f"(actor_location a{actor_id} n{actor_node})")
+                file.write(spaceHandler.newline)
+
+                file.write(spaceHandler.tab)
+                file.write(f"(is_not_working a{actor_id})")
+                file.write(spaceHandler.newline)
+
+                file.write(spaceHandler.tab)
+                file.write(f"(= (total_resource_in_inventory a{actor_id}) 0)")
+                file.write(spaceHandler.newline)
+                file.write(spaceHandler.newline)
+    
+            file.write(spaceHandler.newline)
             file.write("    ;; setting the connection between each nodes\n")
             for edge in world_info['edges'].values():
                 node_A = str(edge['node_a'])
@@ -100,31 +110,28 @@ class PDDLInterface:
                     file.write(spaceHandler.tab)
                     file.write(f"(not_carrying a{actor_id} {color})" + spaceHandler.newline)
                 file.write(spaceHandler.newline)
-            file.write(spaceHandler.newline)
                         
             file.write("    ;; set the resource_count function\n")
             for task in tasks:
+                task_id = str(task['id'])
+                task_node = str(task['node'])
                 resource_list = task['needed_resources']
 
                 file.write(spaceHandler.tab)
                 file.write(f"(= (total_resource_required t{task_id} n{task_node}) {str(sum(resource_list))})")
                 file.write(spaceHandler.newline)
 
-                for index, color in enumerate(PDDLInterface.COLOURS):
-                    resource_needed = resource_list[index]
-                    task_id = str(task['id'])
-                    task_node = str(task['node'])
-
-                    file.write(spaceHandler.tab)
-                    file.write(f"(= (resource_count t{task_id} {color} n{task_node}) {str(resource_needed)})")
-                    file.write(spaceHandler.newline)
+                file.write(spaceHandler.tab)
+                file.write(f"(building_not_built t{task_id} n{task_node})")
                 file.write(spaceHandler.newline)
 
-            file.write(spaceHandler.newline)
-            for actor in actors:
-                actor_id = actor['id']
-                file.write(spaceHandler.tab)
-                file.write(f"(= (total_resource_in_inventory a{actor_id}) 0)")
+                for index, color in enumerate(PDDLInterface.COLOURS):
+                    resource_needed = resource_list[index]
+
+                    if resource_needed>0:
+                        file.write(spaceHandler.tab)
+                        file.write(f"(= (resource_count t{task_id} {color}) {str(resource_needed)})")
+                        file.write(spaceHandler.newline)
                 file.write(spaceHandler.newline)
 
             file.write(spaceHandler.close_paren)
