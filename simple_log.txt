@@ -1,29 +1,35 @@
 (logger) begin log 
-Last ID == 28 
+Last ID == 34 
 0--Node(0) 
 1--Node(1) 
 2--(Node(1), Node(0), 78) 
 3--Node(3) 
-4--(Node(3), Node(1), 92) 
+4--(Node(3), Node(1), 90) 
 5--Node(5) 
-6--(Node(5), Node(3), 85) 
+6--(Node(5), Node(3), 80) 
 7--Node(7) 
-8--(Node(7), Node(5), 83) 
-9--Node(9) 
-10--(Node(9), Node(5), 81) 
-11--(Node(9), Node(7), 76) 
+8--(Node(7), Node(3), 99) 
+9--(Node(7), Node(5), 89) 
+10--Node(10) 
+11--(Node(10), Node(7), 74) 
 12--Node(12) 
-13--(Node(12), Node(7), 77) 
-14--(Node(12), Node(9), 82) 
-15--Node(15) 
-16--(Node(15), Node(9), 95) 
-17--(Node(15), Node(12), 81) 
-18--Task to build at Node(9) with the resource requirements of [2, 0, 0, 2, 0] 
-19--Task to build at Node(5) with the resource requirements of [1, 1, 2, 1, 0] 
-20--Task to build at Node(3) with the resource requirements of [1, 2, 0, 0, 1] 
-21--Actor(21, Node(3)) 
-22--Actor(22, Node(5)) 
-23--Actor(23, Node(1)) 
-24 to 28 are mines: [red, blue, orange, black and green] 
+13--(Node(12), Node(10), 82) 
+14--Node(14) 
+15--(Node(14), Node(12), 81) 
+16--Node(16) 
+17--(Node(16), Node(14), 86) 
+18--Node(18) 
+19--(Node(18), Node(14), 100) 
+20--(Node(18), Node(16), 78) 
+21--Task to build at Node(7) with the resource requirements of [0, 2, 0, 3, 1] 
+22--Task to build at Node(5) with the resource requirements of [0, 1, 0, 1, 0] 
+23--Task to build at Node(14) with the resource requirements of [0, 1, 0, 0, 0] 
+24--Task to build at Node(10) with the resource requirements of [0, 0, 0, 1, 0] 
+25--Task to build at Node(5) with the resource requirements of [1, 2, 1, 0, 0] 
+26--Task to build at Node(10) with the resource requirements of [1, 0, 0, 2, 2] 
+27--Actor(27, Node(14)) 
+28--Actor(28, Node(12)) 
+29--Actor(29, Node(7)) 
+30 to 34 are mines: [red, blue, orange, black and green] 
 -------------------------------------------------------------
 

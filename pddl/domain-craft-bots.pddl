@@ -15,7 +15,7 @@
         (connected ?l1 - node ?l2 - node)
 
         (mine_detail ?m - mine ?l - node ?c - color)
-        (resource_location ?l - node ?c - color)
+        (resource_location ?t - task ?l - node ?c - color)
 
         (create_site ?l - node ?t - task)
         (site_not_created ?l - node ?t - task)
@@ -27,6 +27,9 @@
 
         (building_built ?t - task ?l - node)
         (building_not_built ?t - task ?l - node)
+
+        (is_task_available ?t - task)
+        (is_task_not_available ?t - task)
     )
 
     (:functions
@@ -56,11 +59,14 @@
             (mine_detail ?m ?l ?c)
             (is_not_working ?a)
             (> (resource_count ?t ?c) 0)
+            (is_task_available ?t)
         )
         :effect (and 
             (not (is_not_working ?a))
             (is_working ?a ?t)
-            (resource_location ?l ?c)
+            (not (is_task_available ?t))
+            (is_task_not_available ?t)
+            (resource_location ?t ?l ?c)
         )
     )
 
@@ -71,11 +77,12 @@
             (mine_detail ?m ?l ?c)
             (is_working ?a ?t)
             (> (resource_count ?t ?c) 0)
+            (is_task_not_available ?t)
         )
         :effect (and 
             (not (is_not_working ?a))
             (is_working ?a ?t)
-            (resource_location ?l ?c)
+            (resource_location ?t ?l ?c)
         )
     )
 
@@ -84,7 +91,7 @@
         :parameters (?a - actor ?l - node ?c - color  ?t - task)
         :precondition (and 
             (actor_location ?a ?l) 
-            (resource_location ?l ?c) 
+            (resource_location ?t ?l ?c) 
             (not_carrying ?a ?c)
             (is_working ?a ?t)
             (> (resource_count ?t ?c) 0)
@@ -92,7 +99,7 @@
         )
         :effect (and 
             (not (not_carrying ?a ?c))
-            (not (resource_location ?l ?c))
+            (not (resource_location ?t ?l ?c))
             (carrying ?a ?c)
             (increase (total_resource_in_inventory ?a) 1)
         )
