@@ -101,7 +101,17 @@ class PDDLInterface:
                 task_node = str(task['node'])
 
                 file.write(spaceHandler.tab)
+                file.write(f"(is_task_available t{task_id})")
+                file.write(spaceHandler.newline)
+
+                file.write(spaceHandler.tab)
                 file.write(f"(site_not_created n{task_node} t{task_id})" + spaceHandler.newline)
+                
+                file.write(spaceHandler.tab)
+                file.write(f"(building_not_built t{task_id} n{task_node})")
+                file.write(spaceHandler.newline)
+
+
             file.write(spaceHandler.newline)
 
             file.write("    ;; set the variables not_carrying\n")
@@ -109,7 +119,7 @@ class PDDLInterface:
                 actor_id = str(actor['id'])
                 for color in PDDLInterface.COLOURS:
                     file.write(spaceHandler.tab)
-                    file.write(f"(not_carrying a{actor_id} {color})" + spaceHandler.newline)
+                    file.write(f"(= (carrying_color a{actor_id} {color}) 0)" + spaceHandler.newline)
                 file.write(spaceHandler.newline)
                         
             file.write("    ;; set the resource_count function\n")
@@ -120,14 +130,6 @@ class PDDLInterface:
 
                 file.write(spaceHandler.tab)
                 file.write(f"(= (total_resource_required t{task_id} n{task_node}) {str(sum(resource_list))})")
-                file.write(spaceHandler.newline)
-
-                file.write(spaceHandler.tab)
-                file.write(f"(building_not_built t{task_id} n{task_node})")
-                file.write(spaceHandler.newline)
-
-                file.write(spaceHandler.tab)
-                file.write(f"(is_task_available t{task_id})")
                 file.write(spaceHandler.newline)
 
                 for index, color in enumerate(PDDLInterface.COLOURS):

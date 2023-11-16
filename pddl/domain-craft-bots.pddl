@@ -20,9 +20,6 @@
         (create_site ?l - node ?t - task)
         (site_not_created ?l - node ?t - task)
         
-        (carrying ?a - actor ?c - color)
-        (not_carrying ?a - actor ?c - color)
-
         (deposited ?a - actor ?c - color ?l - node)
 
         (building_built ?t - task ?l - node)
@@ -34,6 +31,7 @@
 
     (:functions
         (resource_count ?t - task ?c - color)
+        (carrying_color ?a - actor ?c - color)
         (total_resource_required ?t - task ?l - node)
         (total_resource_in_inventory ?a - actor)
     )
@@ -92,33 +90,17 @@
         :precondition (and 
             (actor_location ?a ?l) 
             (resource_location ?t ?l ?c) 
-            (not_carrying ?a ?c)
             (is_working ?a ?t)
             (> (resource_count ?t ?c) 0)
-            (<= (total_resource_in_inventory ?a) 5)
+            (< (carrying_color ?a ?c) (resource_count ?t ?c))
+            (<= (total_resource_in_inventory ?a) 7)
         )
         :effect (and 
-            (not (not_carrying ?a ?c))
             (not (resource_location ?t ?l ?c))
-            (carrying ?a ?c)
+            (increase (carrying_color ?a ?c) 1)
             (increase (total_resource_in_inventory ?a) 1)
         )
     )
-
-    ; (:action drop
-    ;     :parameters (?a - actor ?l - node ?c - color)
-    ;     :precondition (and 
-    ;         (actor_location ?a ?l)
-    ;         (carrying ?a ?c)
-    ;         (>= (total_resource_in_inventory ?a) 1)
-    ;     )
-    ;     :effect (and 
-    ;         (resource_location ?l ?c)
-    ;         (not_carrying ?a ?c)
-    ;         (not (carrying ?a ?c))
-    ;         (decrease (total_resource_in_inventory ?a) 1)
-    ;     )
-    ; )
     
     ;; create a new site at the given node and add it to the list of sites
     (:action setup_site
@@ -141,18 +123,17 @@
         :precondition (and 
             (actor_location ?a ?l) 
             (create_site ?l ?t)
-            (carrying ?a ?c)
             (is_working ?a ?t)
             (> (total_resource_in_inventory ?a) 0)
             (> (resource_count ?t ?c) 0)
+            (> (carrying_color ?a ?c) 0)
             (> (total_resource_required ?t ?l) 0)
         )
         :effect (and 
             (deposited ?a ?c ?l) 
-            (not_carrying ?a ?c)
-            (not (carrying ?a ?c)) 
             (decrease (total_resource_in_inventory ?a) 1)
             (decrease (resource_count ?t ?c) 1)
+            (decrease (carrying_color ?a ?c) 1)
             (decrease (total_resource_required ?t ?l) 1)
         )
     )
