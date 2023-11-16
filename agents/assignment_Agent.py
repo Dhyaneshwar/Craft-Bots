@@ -124,37 +124,38 @@ class Assignment_Agent(Agent):
     # Function that actually carries out the action
     # receives actions and params, 
     def send_action(self, action, params):
-        # To be completed
-        # print('no actions work yet!')
-
-        if action == 'move':
+        if action == 'move_between_nodes':
             self.api.move_to(params[0], params[2])
 
-        elif action == 'create-site':
-            for task in self.world_info['tasks'].values():
-                if task['node'] == params[1]:
-                    self.api.start_site(params[0], task['id'])
-                    break
-
-        elif action == 'dig':
+        elif action == 'mine_resource' or action == 'mine_resource_for_task':
             self.api.dig_at(params[0], params[1])
 
-        elif action == 'pick-up':
+        elif action == 'pick_up_resource': 
             for resource in self.world_info['resources'].values():
                 if resource['location'] == params[1] and resource['colour'] == params[2]:
                     self.api.pick_up_resource(params[0], resource['id'])
+                    break
+
+        elif action == 'setup_site':
+            self.api.start_site(params[0], params[2])
 
         elif action == 'deposit':
+            exitLoop = False
             for task in self.world_info['tasks'].values():
-                if task['node'] == params[1]:
+                if task['id'] == params[1]:
                     for resource in self.world_info['resources'].values():
-                        if resource['location'] == params[0] and resource['colour'] == params[2]:
+                        if task['node'] == params[2] and resource['colour'] == params[3]:
                             self.api.deposit_resources(params[0], task['site'], resource['id'])
+                            exitLoop  = True
+                            break
+                if exitLoop:
+                    break
 
-        elif action == 'construct':
+        elif action == 'construct_building':
             for task in self.world_info['tasks'].values():
-                if task['node'] == params[1]:
+                if task['id'] == params[1]:
                     self.api.construct_at(params[0], task['site'])
+                    break
 
         else:
             print('Invalid action')
