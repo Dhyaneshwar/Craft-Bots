@@ -125,37 +125,51 @@ class Assignment_Agent(Agent):
     # receives actions and params, 
     def send_action(self, action, params):
         if action == 'move_between_nodes':
-            self.api.move_to(params[0], params[2])
+            (actor_id, source, destination) = params
+            actor = self.world_info['actors'][actor_id]
+
+            if source == actor['node']:
+                self.api.move_to(actor_id, destination)
 
         elif action == 'mine_resource' or action == 'mine_resource_for_task':
-            self.api.dig_at(params[0], params[1])
+            (actor_id, mine_id, node_id, color_id, task_id) = params
+            actor = self.world_info['actors'][actor_id]
+            mine = self.world_info['mines'][mine_id]
+
+            if actor['node'] == node_id == mine['node']:
+                self.api.dig_at(actor_id, mine_id)
 
         elif action == 'pick_up_resource': 
+            (actor_id, node_id, color_id, task_id) = params
+            actor = self.world_info['actors'][actor_id]
+
             for resource in self.world_info['resources'].values():
-                if resource['location'] == params[1] and resource['colour'] == params[2]:
-                    self.api.pick_up_resource(params[0], resource['id'])
-                    break
-
+                if resource['location'] == node_id == actor['node'] and resource['colour'] == color_id:
+                    self.api.pick_up_resource(actor_id, resource['id'])
+            
         elif action == 'setup_site':
-            self.api.start_site(params[0], params[2])
-
+            (actor_id, node_id, task_id) = params
+            actor = self.world_info['actors'][actor_id]
+            task = self.world_info['tasks'][task_id]
+            
+            if actor['node'] == node_id == task['node']:
+                self.api.start_site(actor_id, task_id)
+                
         elif action == 'deposit':
-            exitLoop = False
-            for task in self.world_info['tasks'].values():
-                if task['id'] == params[1]:
-                    for resource in self.world_info['resources'].values():
-                        if task['node'] == params[2] and resource['colour'] == params[3]:
-                            self.api.deposit_resources(params[0], task['site'], resource['id'])
-                            exitLoop  = True
-                            break
-                if exitLoop:
-                    break
-
+            (actor_id, task_id, node_id, color_id) = params
+            actor = self.world_info['actors'][actor_id]
+            task = self.world_info['tasks'][task_id]
+            for resource in self.world_info['resources'].values():
+                if task['node'] == node_id == actor['node'] and resource['colour'] == color_id:
+                    self.api.deposit_resources(actor_id, task['site'], resource['id'])
+                    
         elif action == 'construct_building':
-            for task in self.world_info['tasks'].values():
-                if task['id'] == params[1]:
-                    self.api.construct_at(params[0], task['site'])
-                    break
+            (actor_id, task_id, node_id) = params
+            actor = self.world_info['actors'][actor_id]
+            task = self.world_info['tasks'][task_id]
 
+            if task['node'] == node_id == actor['node']:
+                self.api.construct_at(actor_id, task['site'])
+            
         else:
             print('Invalid action')
