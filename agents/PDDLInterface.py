@@ -105,10 +105,12 @@ class PDDLInterface:
                 file.write(spaceHandler.newline)
 
                 file.write(spaceHandler.tab)
-                file.write(f"(site_not_created n{task_node} t{task_id})" + spaceHandler.newline)
+                file.write(f"(site_not_created n{task_node} t{task_id})")
+                file.write(spaceHandler.newline)
                 
                 file.write(spaceHandler.tab)
                 file.write(f"(building_not_built t{task_id} n{task_node})")
+                file.write(spaceHandler.newline)
                 file.write(spaceHandler.newline)
 
 
