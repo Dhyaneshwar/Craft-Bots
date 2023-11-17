@@ -4,6 +4,7 @@ import requests
 import json 
 from agents.space_handler import SpaceHandler
 import subprocess
+import re
 
 class PDDLInterface:
 
@@ -179,6 +180,22 @@ class PDDLInterface:
             f.close()
         return plan
 
+    def filterAndTransformPlan(plan):
+        trimmed_response_list = plan.split('\\n')[4:]
+        stripped_list = list(filter(lambda x: x != "", trimmed_response_list))
+        filtered_list = []
+        for action in stripped_list:
+            if (action.find('mine_and_pick_resource') >=0 ):
+                pattern = re.compile(r'mine_and_pick_resource(_for_task)?')
+                mine_action = pattern.sub('mine_resource', action)
+                pick_action = pattern.sub('pick_up_resource', action)
+                filtered_list.append(mine_action)
+                filtered_list.append(pick_action)
+            else:
+                filtered_list.append(action)
+
+        return '\n'.join(filtered_list)
+
     @staticmethod
     # Completed already
     def generatePlan(domain: str, problem: str, plan: str, verbose=False):
@@ -194,37 +211,17 @@ class PDDLInterface:
         # f.close()
 
         optic_path = '/home/mlb23172/bin/optic-cplex'
-        process = subprocess.run([f'{optic_path}', '-N', f'{domain}', f'{problem}'], stdout=subprocess.PIPE)
-
-        process = str(process)
-        start_index = process.rindex('Solution Found')
+        response = str(subprocess.run([f'{optic_path}', '-N', f'{domain}', f'{problem}'], stdout=subprocess.PIPE))
+        start_index = response.rindex('Solution Found')
 
         if start_index == -1:
             return False
 
-        trimmed_response = process[start_index:-2]
-        trimmed_response_list = trimmed_response.split('\\n')[4:]
-        stripped_list = list(filter(lambda x: x != "", trimmed_response_list))
-        filtered_list = []
-
-        for action in stripped_list:
-            if (action.find('mine_and_pick_resource_for_task') >=0 ):
-                mine_action = action.replace("mine_and_pick_resource_for_task", "mine_resource")
-                pick_action = action.replace("mine_and_pick_resource_for_task", "pick_up_resource")
-                filtered_list.append(mine_action)
-                filtered_list.append(pick_action)
-            elif (action.find('mine_and_pick_resource') >=0 ):
-                mine_action = action.replace("mine_and_pick_resource", "mine_resource")
-                pick_action = action.replace("mine_and_pick_resource", "pick_up_resource")
-                filtered_list.append(mine_action)
-                filtered_list.append(pick_action)
-            else:
-                filtered_list.append(action)
-
-        filtered_list = '\n'.join(filtered_list)
+        trimmed_plan = response[start_index:-2]
+        transformed_string = PDDLInterface.filterAndTransformPlan(trimmed_plan)
 
         with open(plan, "w") as file:
-            file.write(filtered_list)
+            file.write(transformed_string)
 
         return True
 
