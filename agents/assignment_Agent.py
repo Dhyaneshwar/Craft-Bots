@@ -58,7 +58,6 @@ class Assignment_Agent(Agent):
             # check if they are all completed
             tasks=[]
             for task in self.world_info['tasks'].values():
-                print('task status', task['completed'])
                 tasks.append(task['completed'])
             
             # If all tasks completed, set state to waiting
@@ -89,7 +88,6 @@ class Assignment_Agent(Agent):
             
         # If its executing, need to fill in again
         elif self.state == Assignment_Agent.STATE.EXECUTING:
-            # print('executing')
             # If the plan is zero, i.e. no plan
             if len(self.plan) == 0:
                 # set agent to be ready
@@ -115,7 +113,6 @@ class Assignment_Agent(Agent):
 
         # if its waiting, set it to executing.  completed
         elif self.state == Assignment_Agent.STATE.WAITING:
-           # print('waiting, so make it execute')
             self.state = Assignment_Agent.STATE.EXECUTING
 
         # finished thinking
