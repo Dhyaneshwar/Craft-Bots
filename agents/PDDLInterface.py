@@ -16,14 +16,14 @@ class PDDLInterface:
     # Function to write a problem file
     # Complete this function
 
-    def writeProblem(world_info, file="pddl/problem.pddl"):
+    def writeProblem(world_info, file="agents/problem.pddl"):
         # Function that will write the problem file
         # write a simple config that will create 10 randomly generated nodes, and 6 fixed tasks (again, randomly generated).
         # Each task will require a different number of resources to solve
         actors = world_info['actors'].values()
         tasks = world_info['tasks'].values()
 
-        with open('./pddl/world_info.txt', "w") as fiel:
+        with open('./agents/world_info.txt', "w") as fiel:
             json.dump(world_info, fiel, indent=4)
 
         spaceHandler = SpaceHandler()
@@ -180,6 +180,7 @@ class PDDLInterface:
             f.close()
         return plan
 
+    @staticmethod
     def filterAndTransformPlan(plan):
         trimmed_response_list = plan.split('\\n')[4:]
         stripped_list = list(filter(lambda x: x != "", trimmed_response_list))
@@ -226,6 +227,6 @@ class PDDLInterface:
         return True
 
 if __name__ == '__main__':
-    PDDLInterface.generatePlan("pddl/domain-craft-bots.pddl", "pddl/problem.pddl", "pddl/plan.pddl", verbose=True)
-    plan = PDDLInterface.readPDDLPlan('pddl/plan.pddl')
+    PDDLInterface.generatePlan("agents/domain-craft-bots.pddl", "agents/problem.pddl", "agents/plan.pddl", verbose=True)
+    plan = PDDLInterface.readPDDLPlan('agents/plan.pddl')
     print(plan)

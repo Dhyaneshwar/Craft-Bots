@@ -43,7 +43,7 @@ class Assignment_Agent(Agent):
         PDDLInterface.writeProblem(world_info=self.world_info)
 
         # Now try to generate a plan
-        PDDLInterface.generatePlan("pddl/domain-craft-bots.pddl", "pddl/problem.pddl", "pddl/plan.pddl", verbose=True)
+        PDDLInterface.generatePlan("agents/domain-craft-bots.pddl", "agents/problem.pddl", "agents/plan.pddl", verbose=True)
         
 
     # A more complete version, which only creates a plan etc if needed
@@ -78,10 +78,10 @@ class Assignment_Agent(Agent):
                 PDDLInterface.writeProblem(world_info=self.world_info)
 
                 # Now generate a plan
-                PDDLInterface.generatePlan("pddl/domain-craft-bots.pddl", "pddl/problem.pddl", "pddl/plan.pddl", verbose=True)
+                PDDLInterface.generatePlan("agents/domain-craft-bots.pddl", "agents/problem.pddl", "agents/plan.pddl", verbose=True)
 
                 # Read the plan (completed)
-                self.plan = PDDLInterface.readPDDLPlan('pddl/plan.pddl')
+                self.plan = PDDLInterface.readPDDLPlan('agents/plan.pddl')
 
                 # Set agent to be executing a plan
                 self.state = Assignment_Agent.STATE.EXECUTING
@@ -128,7 +128,7 @@ class Assignment_Agent(Agent):
             if source == actor['node']:
                 self.api.move_to(actor_id, destination)
 
-        elif action == 'mine_resource':
+        elif action == 'mine_resource' or action == 'mine_resource_for_task':
             (actor_id, mine_id, node_id, color_id, task_id) = params
             actor = self.world_info['actors'][actor_id]
             mine = self.world_info['mines'][mine_id]
@@ -137,7 +137,7 @@ class Assignment_Agent(Agent):
                 self.api.dig_at(actor_id, mine_id)
 
         elif action == 'pick_up_resource': 
-            (actor_id, mine_id, node_id, color_id, task_id) = params
+            (actor_id, node_id, color_id, task_id) = params
             actor = self.world_info['actors'][actor_id]
 
             for resource in self.world_info['resources'].values():
