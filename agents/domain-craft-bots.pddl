@@ -16,7 +16,9 @@
 
         (mine_detail ?m - mine ?l - node ?c - color)
         (resource_location ?t - task ?l - node ?c - color)
-
+        (pick_resource ?a - actor)
+        (no_resource_to_pick ?a - actor)
+        
         (create_site ?l - node ?t - task)
         (site_not_created ?l - node ?t - task)
         
@@ -42,6 +44,7 @@
         :precondition (and 
             (actor_location ?a ?l1) 
             (connected ?l1 ?l2)
+            (no_resource_to_pick ?a)
         )
         :effect (and 
             (not (actor_location ?a ?l1))
@@ -58,6 +61,7 @@
             (is_not_working ?a)
             (> (resource_count ?t ?c) 0)
             (is_task_available ?t)
+            (no_resource_to_pick ?a)
         )
         :effect (and 
             (not (is_not_working ?a))
@@ -65,6 +69,8 @@
             (not (is_task_available ?t))
             (is_task_not_available ?t)
             (resource_location ?t ?l ?c)
+            (pick_resource ?a)
+            (not (no_resource_to_pick ?a))
         )
     )
 
@@ -76,11 +82,12 @@
             (is_working ?a ?t)
             (> (resource_count ?t ?c) 0)
             (is_task_not_available ?t)
+            (no_resource_to_pick ?a)
         )
         :effect (and 
-            (not (is_not_working ?a))
-            (is_working ?a ?t)
             (resource_location ?t ?l ?c)
+            (pick_resource ?a)
+            (not (no_resource_to_pick ?a))
         )
     )
 
@@ -90,6 +97,7 @@
         :precondition (and 
             (actor_location ?a ?l) 
             (resource_location ?t ?l ?c) 
+            (pick_resource ?a)
             (is_working ?a ?t)
             (> (resource_count ?t ?c) 0)
             (< (carrying_color ?a ?c) (resource_count ?t ?c))
@@ -99,6 +107,8 @@
             (not (resource_location ?t ?l ?c))
             (increase (carrying_color ?a ?c) 1)
             (increase (total_resource_in_inventory ?a) 1)
+            (not (pick_resource ?a))
+            (no_resource_to_pick ?a)
         )
     )
     
@@ -109,6 +119,7 @@
             (actor_location ?a ?l) 
             (site_not_created ?l ?t)
             (is_working ?a ?t)
+            (no_resource_to_pick ?a)
         )
         :effect (and 
             (create_site ?l ?t) 
@@ -128,6 +139,7 @@
             (> (resource_count ?t ?c) 0)
             (> (carrying_color ?a ?c) 0)
             (> (total_resource_required ?t ?l) 0)
+            (no_resource_to_pick ?a)
         )
         :effect (and 
             (deposited ?a ?c ?l) 
@@ -148,6 +160,7 @@
             (actor_location ?a ?l) 
             (= (total_resource_required ?t ?l) 0)
             (building_not_built ?t ?l)
+            (no_resource_to_pick ?a)
         )
         :effect (and 
             (not (building_not_built ?t ?l))

@@ -71,6 +71,10 @@ class PDDLInterface:
                 file.write(spaceHandler.newline)
 
                 file.write(spaceHandler.tab)
+                file.write(f"(no_resource_to_pick a{actor_id})")
+                file.write(spaceHandler.newline)
+
+                file.write(spaceHandler.tab)
                 file.write(f"(= (total_resource_in_inventory a{actor_id}) 0)")
                 file.write(spaceHandler.newline)
                 file.write(spaceHandler.newline)
