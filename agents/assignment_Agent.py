@@ -131,7 +131,7 @@ class Assignment_Agent(Agent):
             if source == actor['node']:
                 self.api.move_to(actor_id, destination)
 
-        elif action == 'mine_resource' or action == 'mine_resource_for_task':
+        elif action == 'mine_resource':
             (actor_id, mine_id, node_id, color_id, task_id) = params
             actor = self.world_info['actors'][actor_id]
             mine = self.world_info['mines'][mine_id]
@@ -140,7 +140,7 @@ class Assignment_Agent(Agent):
                 self.api.dig_at(actor_id, mine_id)
 
         elif action == 'pick_up_resource': 
-            (actor_id, node_id, color_id, task_id) = params
+            (actor_id, mine_id, node_id, color_id, task_id) = params
             actor = self.world_info['actors'][actor_id]
 
             for resource in self.world_info['resources'].values():

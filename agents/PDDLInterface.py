@@ -204,7 +204,24 @@ class PDDLInterface:
 
         trimmed_response = process[start_index:-2]
         trimmed_response_list = trimmed_response.split('\\n')[4:]
-        filtered_list = '\n'.join(list(filter(lambda x: x != "", trimmed_response_list)))
+        stripped_list = list(filter(lambda x: x != "", trimmed_response_list))
+        filtered_list = []
+
+        for action in stripped_list:
+            if (action.find('mine_and_pick_resource_for_task') >=0 ):
+                mine_action = action.replace("mine_and_pick_resource_for_task", "mine_resource")
+                pick_action = action.replace("mine_and_pick_resource_for_task", "pick_up_resource")
+                filtered_list.append(mine_action)
+                filtered_list.append(pick_action)
+            elif (action.find('mine_and_pick_resource') >=0 ):
+                mine_action = action.replace("mine_and_pick_resource", "mine_resource")
+                pick_action = action.replace("mine_and_pick_resource", "pick_up_resource")
+                filtered_list.append(mine_action)
+                filtered_list.append(pick_action)
+            else:
+                filtered_list.append(action)
+
+        filtered_list = '\n'.join(filtered_list)
 
         with open(plan, "w") as file:
             file.write(filtered_list)
