@@ -3,7 +3,7 @@ import time
 # set the root path to the project folder
 import sys
 sys.path.append('./')
-
+from craftbots.log_manager import Logger
 from agents.PDDLInterface import PDDLInterface
 from api import agent_api
 from craftbots.entities.building import Building
@@ -121,6 +121,9 @@ class Assignment_Agent(Agent):
     # Function that actually carries out the action
     # receives actions and params, 
     def send_action(self, action, params):
+        param_str = " ".join(params)
+        Logger.info(action, param_str)
+
         if action == 'move_between_nodes':
             (actor_id, source, destination) = params
             actor = self.world_info['actors'][actor_id]
