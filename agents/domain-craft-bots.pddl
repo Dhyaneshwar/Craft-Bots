@@ -15,6 +15,7 @@
         (connected ?l1 - node ?l2 - node)
 
         (mine_detail ?m - mine ?l - node ?c - color)
+        (resource_location ?t - task ?l - node ?c - color)
 
         (create_site ?l - node ?t - task)
         (site_not_created ?l - node ?t - task)
@@ -25,6 +26,7 @@
         (building_not_built ?t - task ?l - node)
 
         (is_task_available ?t - task)
+        (is_task_not_available ?t - task)
     )
 
     (:functions
@@ -48,7 +50,7 @@
     )
 
     ;; when the agent is at a node that contains a mine, the agent produces one resource of the mine's resource type. Then the resource appears on the ground at that node
-    (:action mine_and_pick_resource
+    (:action mine_resource
         :parameters (?a - actor ?m - mine ?l - node ?c - color ?t - task)
         :precondition (and 
             (actor_location ?a ?l) 
@@ -61,22 +63,40 @@
             (not (is_not_working ?a))
             (is_working ?a ?t)
             (not (is_task_available ?t))
-            (increase (carrying_color ?a ?c) 1)
-            (increase (total_resource_in_inventory ?a) 1)
+            (is_task_not_available ?t)
+            (resource_location ?t ?l ?c)
         )
     )
 
-    (:action mine_and_pick_resource_for_task
+    (:action mine_resource_for_task
         :parameters (?a - actor ?m - mine ?l - node ?c - color ?t - task)
         :precondition (and 
             (actor_location ?a ?l) 
             (mine_detail ?m ?l ?c)
             (is_working ?a ?t)
             (> (resource_count ?t ?c) 0)
+            (is_task_not_available ?t)
+        )
+        :effect (and 
+            (not (is_not_working ?a))
+            (is_working ?a ?t)
+            (resource_location ?t ?l ?c)
+        )
+    )
+
+    ;; agent collects a resource on the ground in the same node and adds it to the agent's inventory
+    (:action pick_up_resource
+        :parameters (?a - actor ?l - node ?c - color  ?t - task)
+        :precondition (and 
+            (actor_location ?a ?l) 
+            (resource_location ?t ?l ?c) 
+            (is_working ?a ?t)
+            (> (resource_count ?t ?c) 0)
             (< (carrying_color ?a ?c) (resource_count ?t ?c))
             (<= (total_resource_in_inventory ?a) 7)
         )
         :effect (and 
+            (not (resource_location ?t ?l ?c))
             (increase (carrying_color ?a ?c) 1)
             (increase (total_resource_in_inventory ?a) 1)
         )
