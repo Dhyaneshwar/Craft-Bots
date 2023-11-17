@@ -1,10 +1,8 @@
 from collections.abc import Set
 from typing import List, Tuple, Union
 import requests
-import json 
 from agents.space_handler import SpaceHandler
 import subprocess
-import re
 
 class PDDLInterface:
 
@@ -22,10 +20,6 @@ class PDDLInterface:
         # Each task will require a different number of resources to solve
         actors = world_info['actors'].values()
         tasks = world_info['tasks'].values()
-
-        with open('./agents/world_info.txt', "w") as fiel:
-            json.dump(world_info, fiel, indent=4)
-
         spaceHandler = SpaceHandler()
         
         with open(file, "w") as file:
@@ -185,23 +179,6 @@ class PDDLInterface:
         return plan
 
     @staticmethod
-    def filterAndTransformPlan(plan):
-        trimmed_response_list = plan.split('\\n')[4:]
-        stripped_list = list(filter(lambda x: x != "", trimmed_response_list))
-        filtered_list = []
-        for action in stripped_list:
-            if (action.find('mine_and_pick_resource') >=0 ):
-                pattern = re.compile(r'mine_and_pick_resource(_for_task)?')
-                mine_action = pattern.sub('mine_resource', action)
-                pick_action = pattern.sub('pick_up_resource', action)
-                filtered_list.append(mine_action)
-                filtered_list.append(pick_action)
-            else:
-                filtered_list.append(action)
-
-        return '\n'.join(filtered_list)
-
-    @staticmethod
     # Completed already
     def generatePlan(domain: str, problem: str, plan: str, verbose=False):
         # data = {'domain': open(domain, 'r').read(), 'problem': open(problem, 'r').read()}
@@ -223,7 +200,8 @@ class PDDLInterface:
             return False
 
         trimmed_plan = response[start_index:-2]
-        transformed_string = PDDLInterface.filterAndTransformPlan(trimmed_plan)
+        trimmed_response_list = trimmed_plan.split('\\n')[4:]
+        transformed_string = '\n'.join(list(filter(lambda x: x != "", trimmed_response_list)))
 
         with open(plan, "w") as file:
             file.write(transformed_string)
