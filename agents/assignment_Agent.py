@@ -119,66 +119,79 @@ class Assignment_Agent(Agent):
         # finished thinking
         self.thinking = False
 
+    def get_remaining_resource(self, task_id, color_id):
+        site_id = self.api.get_field(task_id, "site")
+        if site_id == None:
+            return False
+        deposited_resources = self.api.get_field(site_id, 'deposited_resources')
+        needed_resources = self.api.get_field(site_id, 'needed_resources')
+        if deposited_resources==None or needed_resources==None:
+            return False
+        remaining_resources = [a - b for a, b in zip(needed_resources, deposited_resources)]
+        return len(remaining_resources) > 0 and remaining_resources[color_id] > 0
+
     # Function that actually carries out the action
     # receives actions and params, 
     def send_action(self, action, params):
-        if action == 'move_between_nodes':
-            (actor_id, source, destination) = params
-            actor_node = self.api.get_field(actor_id, "node")
+        actor_id = params[0]
+        actor_node = self.api.get_field(actor_id, "node")
+        actor_resources = self.api.get_field(actor_id, 'resources')
 
-            if source == actor_node:
+        if action == 'move_between_nodes':
+            (_, source, destination) = params
+            if source == actor_node and actor_node != destination:
                 self.api.move_to(actor_id, destination)
                 Logger.info("MOVE", f"Actor{actor_id} node{destination}.")
+            return
 
-        elif action == 'mine_resource' or action == 'mine_resource_for_task':
-            (actor_id, mine_id, node_id, color_id, task_id) = params
-            actor_node = self.api.get_field(actor_id, "node")
+        task_id = params[1]
+        node_id = params[2]
+        target_node = self.api.get_field(task_id, "node")
+        site_id = self.api.get_field(task_id, "site")
+        is_site_not_created = site_id == None
+
+        node_resources = self.api.get_field(node_id,'resources')
+    
+        if action == 'mine_resource' or action == 'mine_resource_for_task':
+            color_id = params[3]
+            mine_id = params[4]
             mine_node = self.api.get_field(mine_id, "node")
+            mine_color = self.api.get_field(mine_id,'colour')
+            mine_resource = self.get_remaining_resource(task_id, color_id)
 
-            if actor_node == node_id == mine_node:
+            if mine_color == color_id and (is_site_not_created or mine_resource) and actor_node == node_id == mine_node:
                 self.api.dig_at(actor_id, mine_id)
                 Logger.info("MINE", f"Actor{actor_id} mine{mine_id}.")
 
         elif action == 'pick_up_resource': 
-            (actor_id, node_id, color_id, task_id) = params
-            actor_node = self.api.get_field(actor_id, "node")
-            node_resources = self.api.get_field(node_id,'resources')
+            color_id = params[3]
+            pickup_resource = self.get_remaining_resource(task_id, color_id)
 
             for resource_id in node_resources:
                 resource_location = self.api.get_field(resource_id, 'location')
                 resource_color = self.api.get_field(resource_id, 'colour')
-                if resource_location == node_id == actor_node and resource_color == color_id:
+                if resource_location == node_id == actor_node and resource_color == color_id and (is_site_not_created or pickup_resource):
                     self.api.pick_up_resource(actor_id, resource_id)
-                    Logger.info("PICKUP", f"Actor{actor_id} resource{resource_id}.")        
+                    Logger.info("PICKUP", f"Actor{actor_id} resource{resource_id}.")
+                    break
             
         elif action == 'setup_site':
-            (actor_id, node_id, task_id) = params
-            target_node = self.api.get_field(task_id, "node")
-            actor_node = self.api.get_field(actor_id, "node")
-            
-            if target_node == node_id == actor_node:
+            if site_id == None and target_node == node_id == actor_node:
                 self.api.start_site(actor_id, task_id)
                 Logger.info("START SITE", f"Actor{actor_id} node{actor_node} task{task_id}.")
 
         elif action == 'deposit':
-            (actor_id, task_id, node_id, color_id) = params
-            site_id = self.api.get_field(task_id, "site")
-            target_node = self.api.get_field(task_id, "node")
-            actor_node = self.api.get_field(actor_id, "node")
-            actor_resources = self.api.get_field(actor_id, 'resources')
+            color_id = params[3]
 
+            deposit_resource = self.get_remaining_resource(task_id, color_id)
             for resource_id in actor_resources:
                 resource_color = self.api.get_field(resource_id, 'colour')
-                if target_node == node_id == actor_node and resource_color == color_id:
+                if target_node == node_id == actor_node and resource_color == color_id and deposit_resource:
                     self.api.deposit_resources(actor_id, site_id, resource_id)
                     Logger.info("DEPOSIT", f"Actor{actor_id} site{site_id} resource{resource_id}.")
+                    break
                     
         elif action == 'construct_building':
-            (actor_id, task_id, node_id) = params
-            site_id = self.api.get_field(task_id, "site")
-            target_node = self.api.get_field(task_id, "node")
-            actor_node = self.api.get_field(actor_id, "node")
-
             if target_node == node_id == actor_node:
                 self.api.construct_at(actor_id, site_id)
                 Logger.info("CONSTRUCT", f"Actor{actor_id} site{site_id}.")

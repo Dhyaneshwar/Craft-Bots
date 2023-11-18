@@ -103,8 +103,9 @@ class PDDLInterface:
             for task in tasks:
                 task_id = str(task['id'])
                 task_node = str(task['node'])
+                is_task_completed = task['completed']
 
-                if not world_info['tasks'][task_id]['completed']:
+                if not is_task_completed:
                     file.write(tab())
                     file.write(f"(is_task_available t{task_id})")
                     file.write(newline())
@@ -133,8 +134,9 @@ class PDDLInterface:
                 task_id = str(task['id'])
                 task_node = str(task['node'])
                 resource_list = task['needed_resources']
+                is_task_completed = task['completed']
 
-                if not world_info['tasks'][task_id]['completed']:
+                if not is_task_completed:
                     file.write(tab())
                     file.write(f"(= (total_resource_required t{task_id} n{task_node}) {str(sum(resource_list))})")
                     file.write(newline())
@@ -161,7 +163,9 @@ class PDDLInterface:
             for task in tasks:
                 task_id = str(task['id'])
                 task_node = str(task['node'])
-                if not world_info['tasks'][task_id]['completed']:
+                is_task_completed = task['completed']
+
+                if not is_task_completed:
                     file.write(tab() * 2)
                     file.write(f"(building_built t{task_id} n{task_node})" + newline())
 

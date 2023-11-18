@@ -58,7 +58,7 @@
 
     ;; When the actor (without any task assigned) is in mine, then the resource is digged and that task is assigned to the actor
     (:action mine_resource
-        :parameters (?a - actor ?m - mine ?l - node ?c - color ?t - task)
+        :parameters (?a - actor ?t - task ?l - node ?c - color ?m - mine)
         :precondition (and 
             (actor_location ?a ?l) 
             (mine_detail ?m ?l ?c)
@@ -80,7 +80,7 @@
 
     ;; When the actor working on a specific task is in mine, then the resource required for that task is digged
     (:action mine_resource_for_task
-        :parameters (?a - actor ?m - mine ?l - node ?c - color ?t - task)
+        :parameters (?a - actor ?t - task ?l - node ?c - color ?m - mine)
         :precondition (and 
             (actor_location ?a ?l) 
             (mine_detail ?m ?l ?c)
@@ -98,7 +98,7 @@
 
     ;; actor collects the resource from the same node and adds it to its inventory
     (:action pick_up_resource
-        :parameters (?a - actor ?l - node ?c - color  ?t - task)
+        :parameters (?a - actor ?t - task ?l - node ?c - color)
         :precondition (and 
             (actor_location ?a ?l) 
             (resource_location ?t ?l ?c) 
@@ -119,7 +119,7 @@
     
     ;; create a new site at the node where actor is present
     (:action setup_site
-        :parameters (?a - actor ?l - node ?t - task)
+        :parameters (?a - actor ?t - task ?l - node)
         :precondition (and 
             (actor_location ?a ?l) 
             (site_not_created ?t ?l)
