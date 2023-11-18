@@ -149,7 +149,8 @@ class Assignment_Agent(Agent):
         target_node = self.api.get_field(task_id, "node")
         site_id = self.api.get_field(task_id, "site")
         is_site_not_created = site_id == None
-
+        site_not_available = not is_site_not_created and self.world_info['sites'].get(site_id, None) is None
+        site_missing = is_site_not_created or site_not_available
         node_resources = self.api.get_field(node_id,'resources')
     
         if action == 'mine_resource' or action == 'mine_resource_for_task':
@@ -159,7 +160,7 @@ class Assignment_Agent(Agent):
             mine_color = self.api.get_field(mine_id,'colour')
             mine_resource = self.get_remaining_resource(task_id, color_id)
 
-            if mine_color == color_id and (is_site_not_created or mine_resource) and actor_node == node_id == mine_node:
+            if mine_color == color_id and (site_missing or mine_resource) and actor_node == node_id == mine_node:
                 self.api.dig_at(actor_id, mine_id)
                 Logger.info("MINE", f"Actor{actor_id} mine{mine_id}.")
 
@@ -170,13 +171,13 @@ class Assignment_Agent(Agent):
             for resource_id in node_resources:
                 resource_location = self.api.get_field(resource_id, 'location')
                 resource_color = self.api.get_field(resource_id, 'colour')
-                if resource_location == node_id == actor_node and resource_color == color_id and (is_site_not_created or pickup_resource):
+                if resource_location == node_id == actor_node and resource_color == color_id and (site_missing or pickup_resource):
                     self.api.pick_up_resource(actor_id, resource_id)
                     Logger.info("PICKUP", f"Actor{actor_id} resource{resource_id}.")
                     break
             
         elif action == 'setup_site':
-            if site_id == None and target_node == node_id == actor_node:
+            if site_missing and target_node == node_id == actor_node:
                 self.api.start_site(actor_id, task_id)
                 Logger.info("START SITE", f"Actor{actor_id} node{actor_node} task{task_id}.")
 
