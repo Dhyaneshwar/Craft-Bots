@@ -1,39 +1,210 @@
 (logger) begin log 
-Last ID == 38 
+Last ID == 36 
 0--Node(0) 
 1--Node(1) 
-2--(Node(1), Node(0), 77) 
+2--(Node(1), Node(0), 66) 
 3--Node(3) 
 4--(Node(3), Node(0), 75) 
-5--(Node(3), Node(1), 77) 
+5--(Node(3), Node(1), 79) 
 6--Node(6) 
-7--(Node(6), Node(3), 95) 
+7--(Node(6), Node(3), 74) 
 8--Node(8) 
-9--(Node(8), Node(6), 68) 
+9--(Node(8), Node(6), 75) 
 10--Node(10) 
-11--(Node(10), Node(8), 78) 
-12--Node(12) 
-13--(Node(12), Node(10), 77) 
-14--Node(14) 
-15--(Node(14), Node(12), 85) 
-16--Node(16) 
-17--(Node(16), Node(6), 96) 
-18--(Node(16), Node(8), 56) 
-19--(Node(16), Node(10), 62) 
-20--(Node(16), Node(12), 100) 
-21--(Node(16), Node(14), 81) 
-22--Node(22) 
-23--(Node(22), Node(14), 51) 
-24--(Node(22), Node(16), 78) 
-25--Task to build at Node(8) with the resource requirements of [0, 1, 2, 0, 2] 
-26--Task to build at Node(3) with the resource requirements of [1, 2, 0, 0, 1] 
-27--Task to build at Node(6) with the resource requirements of [0, 0, 1, 0, 0] 
-28--Task to build at Node(6) with the resource requirements of [0, 0, 0, 0, 2] 
-29--Task to build at Node(16) with the resource requirements of [2, 1, 0, 2, 0] 
-30--Task to build at Node(0) with the resource requirements of [1, 2, 0, 1, 0] 
-31--Actor(31, Node(14)) 
-32--Actor(32, Node(10)) 
-33--Actor(33, Node(8)) 
-34 to 38 are mines: [red, blue, orange, black and green] 
+11--(Node(10), Node(6), 85) 
+12--(Node(10), Node(8), 70) 
+13--Node(13) 
+14--(Node(13), Node(10), 81) 
+15--Node(15) 
+16--(Node(15), Node(13), 80) 
+17--Node(17) 
+18--(Node(17), Node(13), 66) 
+19--(Node(17), Node(15), 75) 
+20--Node(20) 
+21--(Node(20), Node(13), 98) 
+22--(Node(20), Node(17), 83) 
+23--Task to build at Node(15) with the resource requirements of [1, 0, 0, 1, 3] 
+24--Task to build at Node(20) with the resource requirements of [1, 0, 0, 1, 0] 
+25--Task to build at Node(1) with the resource requirements of [1, 0, 2, 2, 0] 
+26--Task to build at Node(15) with the resource requirements of [0, 1, 0, 0, 0] 
+27--Task to build at Node(13) with the resource requirements of [1, 0, 1, 0, 0] 
+28--Task to build at Node(17) with the resource requirements of [1, 0, 3, 0, 0] 
+29--Actor(29, Node(0)) 
+30--Actor(30, Node(10)) 
+31--Actor(31, Node(0)) 
+32 to 36 are mines: [red, blue, orange, black and green] 
 -------------------------------------------------------------
 
+[1] (Agent) Move: actor30 node6.
+[3] (Agent) Move: actor31 node3.
+[5] (Agent) Move: actor29 node3.
+[45] (Agent) Mine: actor30 mine32.
+[47] (Agent) Mine: actor31 mine35.
+[49] (Agent) Move: actor29 node6.
+[87] (Agent) Move: actor29 node10.
+[89] (Agent) Pickup: actor31 resource44.
+[91] (Agent) Pickup: actor30 resource43.
+[93] (Agent) Move: actor31 node1.
+[95] (Agent) Move: actor30 node10.
+[131] (Agent) Move: actor29 node6.
+[134] (Agent) Start site: actor31 node1 task25.
+[139] (Agent) Move: actor30 node13.
+[175] (Agent) Mine: actor29 mine32.
+[181] (Agent) Move: actor30 node15.
+[210] (Agent) Pickup: actor29 resource56.
+[212] (Agent) Mine: actor31 mine34.
+[222] (Agent) Start site: actor30 node15 task23.
+[224] (Agent) Move: actor29 node10.
+[247] (Agent) Pickup: actor31 resource62.
+[268] (Agent) Move: actor29 node13.
+[270] (Agent) Move: actor30 node13.
+[272] (Agent) Mine: actor31 mine34.
+[310] (Agent) Start site: actor29 node13 task27.
+[312] (Agent) Move: actor30 node20.
+[314] (Agent) Pickup: actor31 resource67.
+[362] (Agent) Mine: actor30 mine36.
+[364] (Agent) Deposit: actor31 site52 resource62.
+[364] (Agent) Deposit: actor31 site52 resource67.
+[366] (Agent) Move: actor29 node10.
+[408] (Agent) Move: actor29 node6.
+[410] (Agent) Pickup: actor30 resource76.
+[414] (Agent) Move: actor30 node13.
+[416] (Agent) Deposit: actor31 site52 resource44.
+[452] (Agent) Move: actor29 node3.
+[464] (Agent) Move: actor30 node15.
+[466] (Agent) Move: actor31 node3.
+[490] (Agent) Move: actor29 node1.
+[531] (Agent) Mine: actor29 mine34.
+[533] (Agent) Deposit: actor30 site60 resource43.
+[535] (Agent) Mine: actor31 mine35.
+[537] (Agent) Deposit: actor30 site60 resource76.
+[566] (Agent) Pickup: actor29 resource89.
+[570] (Agent) Pickup: actor31 resource91.
+[572] (Agent) Move: actor30 node13.
+[574] (Agent) Move: actor29 node3.
+[576] (Agent) Move: actor31 node1.
+[613] (Agent) Move: actor30 node20.
+[615] (Agent) Move: actor29 node6.
+[617] (Agent) Deposit: actor31 site52 resource91.
+[663] (Agent) Mine: actor30 mine36.
+[665] (Agent) Move: actor29 node10.
+[667] (Agent) Move: actor31 node3.
+[698] (Agent) Pickup: actor30 resource102.
+[708] (Agent) Move: actor31 node6.
+[710] (Agent) Move: actor29 node13.
+[712] (Agent) Move: actor30 node13.
+[746] (Agent) Mine: actor31 mine32.
+[752] (Agent) Deposit: actor29 site69 resource89.
+[762] (Agent) Move: actor30 node15.
+[781] (Agent) Pickup: actor31 resource110.
+[783] (Agent) Deposit: actor29 site69 resource56.
+[803] (Agent) Deposit: actor30 site60 resource102.
+[805] (Agent) Move: actor31 node3.
+[807] (Agent) Construct: actor29 site69.
+[809] (Agent) Move: actor30 node13.
+[843] (Agent) Move: actor31 node1.
+[858] (Agent) Move: actor29 node10.
+[860] (Agent) Move: actor30 node20.
+[884] (Agent) Deposit: actor31 site52 resource110.
+[900] (Agent) Move: actor29 node13.
+[910] (Agent) Mine: actor30 mine36.
+[912] (Agent) Construct: actor31 site52.
+[942] (Agent) Move: actor29 node10.
+[945] (Agent) Pickup: actor30 resource126.
+[1038] (Agent) Move: actor31 node3.
+[1040] (Agent) Move: actor29 node6.
+[1042] (Agent) Move: actor30 node13.
+[1079] (Agent) Mine: actor31 mine35.
+[1084] (Agent) Move: actor29 node3.
+[1092] (Agent) Move: actor30 node15.
+[1114] (Agent) Pickup: actor31 resource135.
+[1122] (Agent) Move: actor29 node1.
+[1124] (Agent) Move: actor31 node6.
+[1163] (Agent) Mine: actor29 mine34.
+[1165] (Agent) Move: actor30 node13.
+[1167] (Agent) Move: actor31 node10.
+[1198] (Agent) Pickup: actor29 resource142.
+[1206] (Agent) Move: actor30 node10.
+[1211] (Agent) Move: actor31 node13.
+[1213] (Agent) Move: actor29 node3.
+[1248] (Agent) Move: actor30 node6.
+[1253] (Agent) Move: actor31 node20.
+[1255] (Agent) Move: actor29 node6.
+[1292] (Agent) Move: actor30 node3.
+[1303] (Agent) Start site: actor31 node20 task24.
+[1305] (Agent) Move: actor29 node10.
+[1330] (Agent) Mine: actor30 mine35.
+[1332] (Agent) Deposit: actor31 site152 resource135.
+[1349] (Agent) Move: actor29 node13.
+[1365] (Agent) Pickup: actor30 resource157.
+[1367] (Agent) Move: actor31 node13.
+[1391] (Agent) Move: actor29 node17.
+[1393] (Agent) Move: actor30 node6.
+[1417] (Agent) Move: actor31 node10.
+[1425] (Agent) Start site: actor29 node17 task28.
+[1431] (Agent) Move: actor30 node10.
+[1475] (Agent) Move: actor30 node13.
+[1477] (Agent) Move: actor29 node13.
+[1479] (Agent) Move: actor31 node6.
+[1517] (Agent) Move: actor30 node15.
+[1519] (Agent) Move: actor29 node10.
+[1523] (Agent) Mine: actor31 mine32.
+[1558] (Agent) Deposit: actor30 site60 resource157.
+[1561] (Agent) Move: actor29 node6.
+[1563] (Agent) Pickup: actor31 resource172.
+[1565] (Agent) Deposit: actor30 site60 resource126.
+[1605] (Agent) Mine: actor29 mine32.
+[1607] (Agent) Move: actor31 node10.
+[1609] (Agent) Construct: actor30 site60.
+[1640] (Agent) Pickup: actor29 resource180.
+[1651] (Agent) Move: actor31 node13.
+[1735] (Agent) Move: actor30 node13.
+[1737] (Agent) Move: actor29 node10.
+[1739] (Agent) Move: actor31 node20.
+[1776] (Agent) Move: actor30 node10.
+[1781] (Agent) Move: actor29 node13.
+[1789] (Agent) Deposit: actor31 site152 resource172.
+[1823] (Agent) Move: actor29 node17.
+[1825] (Agent) Move: actor30 node6.
+[1827] (Agent) Construct: actor31 site152.
+[1869] (Agent) Move: actor30 node3.
+[1871] (Agent) Deposit: actor29 site164 resource142.
+[1907] (Agent) Move: actor30 node1.
+[1909] (Agent) Move: actor29 node13.
+[1948] (Agent) Mine: actor30 mine33.
+[1950] (Agent) Move: actor29 node10.
+[1983] (Agent) Pickup: actor30 resource200.
+[1992] (Agent) Move: actor29 node6.
+[1994] (Agent) Move: actor30 node3.
+[2036] (Agent) Move: actor29 node3.
+[2038] (Agent) Move: actor30 node6.
+[2074] (Agent) Move: actor29 node1.
+[2076] (Agent) Move: actor30 node10.
+[2115] (Agent) Mine: actor29 mine34.
+[2150] (Agent) Pickup: actor29 resource209.
+[2152] (Agent) Move: actor30 node13.
+[2154] (Agent) Move: actor29 node3.
+[2194] (Agent) Move: actor30 node15.
+[2196] (Agent) Move: actor29 node6.
+[2235] (Agent) Start site: actor30 node15 task26.
+[2237] (Agent) Move: actor29 node10.
+[2239] (Agent) Deposit: actor30 site216 resource200.
+[2281] (Agent) Move: actor29 node13.
+[2283] (Agent) Construct: actor30 site216.
+[2323] (Agent) Move: actor29 node17.
+[2357] (Agent) Deposit: actor29 site164 resource209.
+[2359] (Agent) Deposit: actor29 site164 resource180.
+[2361] (Agent) Move: actor29 node13.
+[2395] (Agent) Move: actor29 node10.
+[2437] (Agent) Move: actor29 node6.
+[2481] (Agent) Move: actor29 node3.
+[2519] (Agent) Move: actor29 node1.
+[2560] (Agent) Mine: actor29 mine34.
+[2595] (Agent) Pickup: actor29 resource231.
+[2597] (Agent) Move: actor29 node3.
+[2638] (Agent) Move: actor29 node6.
+[2676] (Agent) Move: actor29 node10.
+[2720] (Agent) Move: actor29 node13.
+[2762] (Agent) Move: actor29 node17.
+[2796] (Agent) Deposit: actor29 site164 resource231.
+[2798] (Agent) Construct: actor29 site164.
