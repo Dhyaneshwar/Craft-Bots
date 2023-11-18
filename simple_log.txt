@@ -1,191 +1,203 @@
 (logger) begin log 
-Last ID == 38 
+Last ID == 39 
 0--Node(0) 
 1--Node(1) 
-2--(Node(1), Node(0), 87) 
+2--(Node(1), Node(0), 81) 
 3--Node(3) 
-4--(Node(3), Node(0), 61) 
-5--(Node(3), Node(1), 74) 
-6--Node(6) 
-7--(Node(6), Node(0), 98) 
-8--(Node(6), Node(3), 78) 
+4--(Node(3), Node(1), 79) 
+5--Node(5) 
+6--(Node(5), Node(3), 90) 
+7--Node(7) 
+8--(Node(7), Node(5), 72) 
 9--Node(9) 
-10--(Node(9), Node(6), 81) 
-11--Node(11) 
-12--(Node(11), Node(9), 79) 
-13--Node(13) 
-14--(Node(13), Node(9), 81) 
-15--(Node(13), Node(11), 88) 
-16--Node(16) 
-17--(Node(16), Node(13), 88) 
-18--Node(18) 
-19--(Node(18), Node(13), 55) 
-20--(Node(18), Node(16), 84) 
-21--Node(21) 
-22--(Node(21), Node(11), 53) 
-23--(Node(21), Node(13), 91) 
-24--(Node(21), Node(18), 76) 
-25--Task to build at Node(1) with the resource requirements of [0, 0, 0, 1, 0] 
-26--Task to build at Node(18) with the resource requirements of [1, 0, 1, 1, 1] 
-27--Task to build at Node(18) with the resource requirements of [2, 0, 0, 2, 0] 
-28--Task to build at Node(11) with the resource requirements of [1, 0, 1, 0, 4] 
-29--Task to build at Node(21) with the resource requirements of [0, 0, 0, 1, 0] 
-30--Task to build at Node(13) with the resource requirements of [1, 1, 1, 1, 0] 
-31--Actor(31, Node(21)) 
+10--(Node(9), Node(5), 94) 
+11--(Node(9), Node(7), 84) 
+12--Node(12) 
+13--(Node(12), Node(5), 62) 
+14--(Node(12), Node(9), 93) 
+15--Node(15) 
+16--(Node(15), Node(12), 79) 
+17--Node(17) 
+18--(Node(17), Node(3), 63) 
+19--(Node(17), Node(5), 58) 
+20--(Node(17), Node(12), 73) 
+21--(Node(17), Node(15), 82) 
+22--Node(22) 
+23--(Node(22), Node(3), 87) 
+24--(Node(22), Node(15), 88) 
+25--(Node(22), Node(17), 74) 
+26--Task to build at Node(5) with the resource requirements of [0, 0, 1, 1, 0] 
+27--Task to build at Node(17) with the resource requirements of [0, 0, 1, 3, 0] 
+28--Task to build at Node(15) with the resource requirements of [0, 0, 1, 0, 0] 
+29--Task to build at Node(0) with the resource requirements of [2, 2, 0, 0, 2] 
+30--Task to build at Node(17) with the resource requirements of [0, 1, 0, 0, 1] 
+31--Task to build at Node(9) with the resource requirements of [2, 2, 0, 0, 1] 
 32--Actor(32, Node(0)) 
-33--Actor(33, Node(3)) 
-34 to 38 are mines: [red, blue, orange, black and green] 
+33--Actor(33, Node(9)) 
+34--Actor(34, Node(7)) 
+35 to 39 are mines: [red, blue, orange, black and green] 
 -------------------------------------------------------------
 
-[1] (MINE) Actor32 mine34.
-[3] (MINE) Actor31 mine37.
-[5] (MOVE) Actor33 node6.
-[36] (PICKUP) Actor32 resource42.
-[38] (PICKUP) Actor31 resource44.
-[45] (MOVE) Actor33 node9.
-[47] (MOVE) Actor32 node6.
-[49] (MOVE) Actor31 node18.
-[87] (MOVE) Actor33 node13.
-[97] (MOVE) Actor32 node9.
-[99] (START SITE) Actor31 node18 task26.
-[129] (MOVE) Actor33 node18.
-[139] (MOVE) Actor32 node11.
-[141] (MINE) Actor31 mine38.
-[158] (MINE) Actor33 mine38.
-[180] (MOVE) Actor32 node21.
-[182] (PICKUP) Actor33 resource57.
-[208] (MINE) Actor32 mine37.
-[210] (MOVE) Actor33 node13.
-[243] (PICKUP) Actor32 resource62.
-[245] (MOVE) Actor33 node11.
-[247] (MOVE) Actor31 node16.
-[249] (MOVE) Actor32 node13.
-[290] (START SITE) Actor33 node11 task28.
-[292] (MINE) Actor31 mine36.
-[296] (START SITE) Actor32 node13 task30.
-[298] (MOVE) Actor33 node21.
-[327] (PICKUP) Actor31 resource73.
-[329] (DEPOSIT) Actor32 site71 resource42.
-[331] (MOVE) Actor33 node18.
-[333] (MOVE) Actor31 node18.
-[335] (MOVE) Actor32 node16.
-[370] (MINE) Actor33 mine38.
-[376] (MOVE) Actor31 node21.
-[380] (MINE) Actor32 mine36.
-[405] (PICKUP) Actor33 resource82.
-[415] (MOVE) Actor31 node18.
-[417] (MOVE) Actor33 node13.
-[419] (PICKUP) Actor32 resource84.
-[454] (DEPOSIT) Actor31 site52 resource73.
-[456] (MOVE) Actor33 node11.
-[458] (MOVE) Actor31 node13.
-[460] (MOVE) Actor32 node13.
-[501] (MOVE) Actor33 node13.
-[503] (MOVE) Actor31 node9.
-[505] (DEPOSIT) Actor32 site71 resource84.
-[546] (MOVE) Actor33 node16.
-[548] (MOVE) Actor31 node6.
-[550] (DEPOSIT) Actor32 site71 resource62.
-[552] (MOVE) Actor32 node9.
-[591] (MINE) Actor33 mine36.
-[593] (MOVE) Actor31 node0.
-[626] (PICKUP) Actor33 resource101.
-[643] (MINE) Actor31 mine34.
-[645] (MOVE) Actor32 node6.
-[687] (MOVE) Actor32 node0.
-[689] (MOVE) Actor33 node13.
-[691] (PICKUP) Actor31 resource105.
-[737] (MOVE) Actor32 node1.
-[739] (MOVE) Actor33 node11.
-[741] (MOVE) Actor31 node6.
-[782] (MINE) Actor32 mine35.
-[784] (DEPOSIT) Actor33 site68 resource101.
-[791] (MOVE) Actor31 node9.
-[817] (PICKUP) Actor32 resource115.
-[819] (DEPOSIT) Actor33 site68 resource57.
-[819] (DEPOSIT) Actor33 site68 resource82.
-[833] (MOVE) Actor31 node13.
-[835] (MOVE) Actor32 node0.
-[875] (MOVE) Actor31 node18.
-[880] (MOVE) Actor32 node6.
-[882] (MOVE) Actor33 node13.
-[904] (DEPOSIT) Actor31 site52 resource44.
-[930] (MOVE) Actor32 node9.
-[932] (MOVE) Actor33 node18.
-[934] (DEPOSIT) Actor31 site52 resource105.
-[972] (MOVE) Actor32 node13.
-[974] (MINE) Actor33 mine38.
-[976] (CONSTRUCT) Actor31 site52.
-[1014] (DEPOSIT) Actor32 site71 resource115.
-[1016] (PICKUP) Actor33 resource131.
-[1052] (MOVE) Actor31 node21.
-[1054] (CONSTRUCT) Actor32 site71.
-[1056] (MOVE) Actor33 node13.
-[1091] (MINE) Actor31 mine37.
-[1093] (MOVE) Actor33 node11.
-[1126] (PICKUP) Actor31 resource139.
-[1155] (MOVE) Actor32 node21.
-[1157] (DEPOSIT) Actor33 site68 resource131.
-[1202] (MINE) Actor32 mine37.
-[1204] (START SITE) Actor31 node21 task29.
-[1206] (MOVE) Actor33 node13.
-[1237] (PICKUP) Actor32 resource148.
-[1239] (DEPOSIT) Actor31 site146 resource139.
-[1251] (MOVE) Actor33 node18.
-[1253] (CONSTRUCT) Actor31 site146.
-[1255] (MOVE) Actor32 node18.
-[1280] (MINE) Actor33 mine38.
-[1282] (MINE) Actor31 mine37.
-[1294] (START SITE) Actor32 node18 task27.
-[1315] (PICKUP) Actor33 resource159.
-[1317] (PICKUP) Actor31 resource161.
-[1319] (MOVE) Actor32 node13.
-[1321] (MOVE) Actor33 node13.
-[1323] (MOVE) Actor31 node11.
-[1348] (MOVE) Actor32 node9.
-[1350] (MOVE) Actor33 node11.
-[1390] (MOVE) Actor32 node6.
-[1392] (MOVE) Actor31 node9.
-[1395] (DEPOSIT) Actor33 site68 resource159.
-[1432] (MOVE) Actor32 node0.
-[1434] (MOVE) Actor31 node6.
-[1436] (MOVE) Actor33 node9.
-[1482] (MINE) Actor32 mine34.
-[1484] (MOVE) Actor31 node0.
-[1486] (MOVE) Actor33 node6.
-[1517] (PICKUP) Actor32 resource177.
-[1534] (MOVE) Actor31 node1.
-[1536] (MOVE) Actor33 node0.
-[1538] (MOVE) Actor32 node6.
-[1579] (START SITE) Actor31 node1 task25.
-[1586] (MINE) Actor33 mine34.
-[1588] (MOVE) Actor32 node9.
-[1590] (DEPOSIT) Actor31 site183 resource161.
-[1621] (PICKUP) Actor33 resource187.
-[1630] (MOVE) Actor32 node13.
-[1632] (CONSTRUCT) Actor31 site183.
-[1672] (MOVE) Actor32 node18.
-[1674] (MOVE) Actor33 node6.
-[1701] (DEPOSIT) Actor32 site158 resource177.
-[1724] (MOVE) Actor33 node9.
-[1726] (DEPOSIT) Actor32 site158 resource148.
-[1766] (MOVE) Actor33 node11.
-[1768] (MOVE) Actor32 node21.
-[1807] (DEPOSIT) Actor33 site68 resource187.
-[1809] (MINE) Actor32 mine37.
-[1811] (CONSTRUCT) Actor33 site68.
-[1844] (PICKUP) Actor32 resource202.
-[1846] (MOVE) Actor32 node18.
-[1885] (DEPOSIT) Actor32 site158 resource202.
-[1887] (MOVE) Actor32 node13.
-[1916] (MOVE) Actor32 node9.
-[1958] (MOVE) Actor32 node6.
-[2000] (MOVE) Actor32 node0.
-[2050] (MINE) Actor32 mine34.
-[2085] (PICKUP) Actor32 resource212.
-[2087] (MOVE) Actor32 node6.
-[2137] (MOVE) Actor32 node9.
-[2179] (MOVE) Actor32 node13.
-[2221] (MOVE) Actor32 node18.
-[2250] (DEPOSIT) Actor32 site158 resource212.
-[2252] (CONSTRUCT) Actor32 site158.
+[1] (MOVE) Actor34 node5.
+[3] (MOVE) Actor33 node12.
+[5] (MOVE) Actor32 node1.
+[51] (MINE) Actor33 mine35.
+[53] (MOVE) Actor34 node3.
+[55] (MINE) Actor32 mine37.
+[99] (MOVE) Actor34 node17.
+[101] (PICKUP) Actor33 resource46.
+[103] (PICKUP) Actor32 resource47.
+[132] (MINE) Actor34 mine39.
+[134] (MOVE) Actor33 node9.
+[136] (MOVE) Actor32 node3.
+[167] (PICKUP) Actor34 resource54.
+[182] (START SITE) Actor33 node9 task31.
+[184] (MOVE) Actor32 node17.
+[186] (START SITE) Actor34 node17 task30.
+[188] (MOVE) Actor33 node12.
+[217] (MOVE) Actor32 node15.
+[236] (MOVE) Actor33 node15.
+[238] (DEPOSIT) Actor34 site60 resource54.
+[259] (START SITE) Actor32 node15 task28.
+[277] (MINE) Actor33 mine36.
+[279] (MOVE) Actor34 node15.
+[281] (DEPOSIT) Actor32 site66 resource47.
+[312] (PICKUP) Actor33 resource70.
+[321] (MINE) Actor34 mine36.
+[323] (CONSTRUCT) Actor32 site66.
+[349] (MOVE) Actor32 node17.
+[351] (MOVE) Actor33 node12.
+[356] (PICKUP) Actor34 resource77.
+[391] (MOVE) Actor32 node3.
+[393] (MOVE) Actor33 node9.
+[395] (MOVE) Actor34 node17.
+[441] (DEPOSIT) Actor33 site57 resource46.
+[443] (MOVE) Actor32 node1.
+[445] (DEPOSIT) Actor34 site60 resource77.
+[447] (MOVE) Actor33 node12.
+[484] (MOVE) Actor32 node3.
+[486] (CONSTRUCT) Actor34 site60.
+[525] (MOVE) Actor32 node17.
+[527] (MINE) Actor33 mine35.
+[537] (MOVE) Actor34 node15.
+[558] (MINE) Actor32 mine39.
+[562] (PICKUP) Actor33 resource93.
+[579] (MINE) Actor34 mine38.
+[614] (PICKUP) Actor34 resource97.
+[616] (PICKUP) Actor32 resource96.
+[618] (MOVE) Actor33 node9.
+[620] (MOVE) Actor34 node12.
+[622] (MOVE) Actor32 node3.
+[666] (DEPOSIT) Actor33 site57 resource93.
+[668] (MOVE) Actor34 node5.
+[670] (MOVE) Actor32 node1.
+[672] (DEPOSIT) Actor33 site57 resource70.
+[674] (MOVE) Actor33 node12.
+[711] (MOVE) Actor32 node0.
+[713] (START SITE) Actor34 node5 task26.
+[722] (MOVE) Actor33 node15.
+[724] (DEPOSIT) Actor34 site110 resource97.
+[753] (START SITE) Actor32 node0 task29.
+[763] (MINE) Actor33 mine36.
+[765] (MOVE) Actor34 node3.
+[767] (MOVE) Actor32 node1.
+[798] (PICKUP) Actor33 resource118.
+[811] (MOVE) Actor34 node1.
+[813] (MOVE) Actor32 node0.
+[815] (MOVE) Actor33 node12.
+[852] (MINE) Actor34 mine37.
+[855] (MOVE) Actor32 node1.
+[857] (MOVE) Actor33 node9.
+[887] (PICKUP) Actor34 resource126.
+[897] (MOVE) Actor32 node3.
+[905] (DEPOSIT) Actor33 site57 resource118.
+[907] (MOVE) Actor34 node3.
+[938] (MOVE) Actor32 node17.
+[940] (MOVE) Actor33 node12.
+[948] (MOVE) Actor34 node5.
+[971] (MOVE) Actor32 node15.
+[1013] (MINE) Actor32 mine36.
+[1015] (MOVE) Actor33 node17.
+[1017] (DEPOSIT) Actor34 site110 resource126.
+[1019] (CONSTRUCT) Actor34 site110.
+[1048] (PICKUP) Actor32 resource139.
+[1053] (MINE) Actor33 mine39.
+[1070] (MOVE) Actor34 node17.
+[1072] (MOVE) Actor32 node17.
+[1088] (PICKUP) Actor33 resource145.
+[1100] (MOVE) Actor34 node15.
+[1114] (MOVE) Actor32 node3.
+[1116] (MOVE) Actor33 node12.
+[1142] (MINE) Actor34 mine38.
+[1147] (MOVE) Actor32 node1.
+[1154] (MOVE) Actor33 node9.
+[1177] (PICKUP) Actor34 resource153.
+[1188] (MOVE) Actor32 node0.
+[1202] (DEPOSIT) Actor33 site57 resource145.
+[1204] (MOVE) Actor34 node17.
+[1230] (DEPOSIT) Actor32 site114 resource96.
+[1232] (CONSTRUCT) Actor33 site57.
+[1246] (START SITE) Actor34 node17 task27.
+[1248] (MOVE) Actor32 node1.
+[1250] (DEPOSIT) Actor34 site161 resource153.
+[1290] (MOVE) Actor32 node3.
+[1292] (MOVE) Actor34 node15.
+[1331] (MOVE) Actor32 node17.
+[1334] (MINE) Actor34 mine38.
+[1364] (MINE) Actor32 mine39.
+[1369] (PICKUP) Actor34 resource170.
+[1399] (PICKUP) Actor32 resource172.
+[1401] (MOVE) Actor34 node17.
+[1403] (MOVE) Actor32 node3.
+[1443] (DEPOSIT) Actor34 site161 resource170.
+[1445] (MOVE) Actor32 node1.
+[1447] (MOVE) Actor34 node15.
+[1486] (MOVE) Actor32 node0.
+[1489] (MINE) Actor34 mine38.
+[1528] (DEPOSIT) Actor32 site114 resource172.
+[1530] (PICKUP) Actor34 resource181.
+[1532] (MOVE) Actor32 node1.
+[1534] (MOVE) Actor34 node17.
+[1574] (MOVE) Actor32 node3.
+[1576] (DEPOSIT) Actor34 site161 resource181.
+[1615] (MOVE) Actor32 node17.
+[1617] (MOVE) Actor34 node3.
+[1648] (MOVE) Actor32 node12.
+[1650] (MOVE) Actor34 node1.
+[1686] (MINE) Actor32 mine35.
+[1691] (MINE) Actor34 mine37.
+[1721] (PICKUP) Actor32 resource194.
+[1726] (PICKUP) Actor34 resource196.
+[1728] (MOVE) Actor32 node17.
+[1730] (MOVE) Actor34 node3.
+[1766] (MOVE) Actor32 node3.
+[1771] (MOVE) Actor34 node17.
+[1799] (MOVE) Actor32 node1.
+[1840] (MOVE) Actor32 node0.
+[1842] (DEPOSIT) Actor34 site161 resource196.
+[1882] (DEPOSIT) Actor32 site114 resource194.
+[1884] (CONSTRUCT) Actor34 site161.
+[1886] (DEPOSIT) Actor32 site114 resource139.
+[1888] (MOVE) Actor32 node1.
+[1930] (MOVE) Actor32 node3.
+[1971] (MOVE) Actor32 node17.
+[2004] (MOVE) Actor32 node15.
+[2046] (MINE) Actor32 mine36.
+[2081] (PICKUP) Actor32 resource214.
+[2083] (MOVE) Actor32 node17.
+[2125] (MOVE) Actor32 node3.
+[2158] (MOVE) Actor32 node1.
+[2199] (MOVE) Actor32 node0.
+[2241] (DEPOSIT) Actor32 site114 resource214.
+[2243] (MOVE) Actor32 node1.
+[2285] (MOVE) Actor32 node3.
+[2326] (MOVE) Actor32 node17.
+[2359] (MOVE) Actor32 node12.
+[2397] (MINE) Actor32 mine35.
+[2433] (PICKUP) Actor32 resource226.
+[2435] (MOVE) Actor32 node17.
+[2473] (MOVE) Actor32 node3.
+[2506] (MOVE) Actor32 node1.
+[2547] (MOVE) Actor32 node0.
+[2589] (DEPOSIT) Actor32 site114 resource226.
+[2591] (CONSTRUCT) Actor32 site114.
