@@ -121,55 +121,66 @@ class Assignment_Agent(Agent):
     # Function that actually carries out the action
     # receives actions and params, 
     def send_action(self, action, params):
-        param_str = " ".join(params)
-        Logger.info(action, param_str)
-
         if action == 'move_between_nodes':
             (actor_id, source, destination) = params
-            actor = self.world_info['actors'][actor_id]
+            actor_node = self.api.get_field(actor_id, "node")
 
-            if source == actor['node']:
+            if source == actor_node:
                 self.api.move_to(actor_id, destination)
+                Logger.info("Agent", f"Move: actor{actor_id} node{destination}.")
 
         elif action == 'mine_resource' or action == 'mine_resource_for_task':
             (actor_id, mine_id, node_id, color_id, task_id) = params
-            actor = self.world_info['actors'][actor_id]
-            mine = self.world_info['mines'][mine_id]
+            actor_node = self.api.get_field(actor_id, "node")
+            mine_node = self.api.get_field(mine_id, "node")
 
-            if actor['node'] == node_id == mine['node']:
+            if actor_node == node_id == mine_node:
                 self.api.dig_at(actor_id, mine_id)
+                Logger.info("Agent", f"Mine: actor{actor_id} mine{mine_id}.")
 
         elif action == 'pick_up_resource': 
             (actor_id, node_id, color_id, task_id) = params
-            actor = self.world_info['actors'][actor_id]
+            actor_node = self.api.get_field(actor_id, "node")
+            node_resources = self.api.get_field(node_id,'resources')
 
-            for resource in self.world_info['resources'].values():
-                if resource['location'] == node_id == actor['node'] and resource['colour'] == color_id:
-                    self.api.pick_up_resource(actor_id, resource['id'])
+            for resource_id in node_resources:
+                resource_location = self.api.get_field(resource_id, 'location')
+                resource_color = self.api.get_field(resource_id, 'colour')
+                if resource_location == node_id == actor_node and resource_color == color_id:
+                    self.api.pick_up_resource(actor_id, resource_id)
+                    Logger.info("Agent", f"Pickup: actor{actor_id} resource{resource_id}.")        
             
         elif action == 'setup_site':
             (actor_id, node_id, task_id) = params
-            actor = self.world_info['actors'][actor_id]
-            task = self.world_info['tasks'][task_id]
+            target_node = self.api.get_field(task_id, "node")
+            actor_node = self.api.get_field(actor_id, "node")
             
-            if actor['node'] == node_id == task['node']:
+            if target_node == node_id == actor_node:
                 self.api.start_site(actor_id, task_id)
-                
+                Logger.info("Agent", f"Start site: actor{actor_id} node{actor_node} task{task_id}.")
+
         elif action == 'deposit':
             (actor_id, task_id, node_id, color_id) = params
-            actor = self.world_info['actors'][actor_id]
-            task = self.world_info['tasks'][task_id]
-            for resource in self.world_info['resources'].values():
-                if task['node'] == node_id == actor['node'] and resource['colour'] == color_id:
-                    self.api.deposit_resources(actor_id, task['site'], resource['id'])
+            site_id = self.api.get_field(task_id, "site")
+            target_node = self.api.get_field(task_id, "node")
+            actor_node = self.api.get_field(actor_id, "node")
+            actor_resources = self.api.get_field(actor_id, 'resources')
+
+            for resource_id in actor_resources:
+                resource_color = self.api.get_field(resource_id, 'colour')
+                if target_node == node_id == actor_node and resource_color == color_id:
+                    self.api.deposit_resources(actor_id, site_id, resource_id)
+                    Logger.info("Agent", f"Deposit: actor{actor_id} site{site_id} resource{resource_id}.")
                     
         elif action == 'construct_building':
             (actor_id, task_id, node_id) = params
-            actor = self.world_info['actors'][actor_id]
-            task = self.world_info['tasks'][task_id]
+            site_id = self.api.get_field(task_id, "site")
+            target_node = self.api.get_field(task_id, "node")
+            actor_node = self.api.get_field(actor_id, "node")
 
-            if task['node'] == node_id == actor['node']:
-                self.api.construct_at(actor_id, task['site'])
+            if target_node == node_id == actor_node:
+                self.api.construct_at(actor_id, site_id)
+                Logger.info("Agent", f"Construct: actor{actor_id} site{site_id}.")
             
         else:
             print('Invalid action')
