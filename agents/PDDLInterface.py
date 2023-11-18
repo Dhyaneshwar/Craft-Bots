@@ -38,7 +38,7 @@ class PDDLInterface:
 
             file.write("(:objects" + newline())
 
-            file.write(";; Declaring the objects for the problem")
+            file.write(tab() + ";; Declaring the objects for the problem" + newline())
             for world_info_data_key in PDDLInterface.DATA_KEYS:
                 file.write(tab())
                 for actor in world_info[world_info_data_key].values():
