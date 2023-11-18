@@ -110,6 +110,7 @@ class Assignment_Agent(Agent):
                     self.send_action(action, params)
                     
                     self.state = Assignment_Agent.STATE.WAITING
+                    time.sleep(0.2)
 
         # if its waiting, set it to executing.  completed
         elif self.state == Assignment_Agent.STATE.WAITING:
@@ -127,7 +128,7 @@ class Assignment_Agent(Agent):
 
             if source == actor_node:
                 self.api.move_to(actor_id, destination)
-                Logger.info("Agent", f"Move: actor{actor_id} node{destination}.")
+                Logger.info("MOVE", f"Actor{actor_id} node{destination}.")
 
         elif action == 'mine_resource' or action == 'mine_resource_for_task':
             (actor_id, mine_id, node_id, color_id, task_id) = params
@@ -136,7 +137,7 @@ class Assignment_Agent(Agent):
 
             if actor_node == node_id == mine_node:
                 self.api.dig_at(actor_id, mine_id)
-                Logger.info("Agent", f"Mine: actor{actor_id} mine{mine_id}.")
+                Logger.info("MINE", f"Actor{actor_id} mine{mine_id}.")
 
         elif action == 'pick_up_resource': 
             (actor_id, node_id, color_id, task_id) = params
@@ -148,7 +149,7 @@ class Assignment_Agent(Agent):
                 resource_color = self.api.get_field(resource_id, 'colour')
                 if resource_location == node_id == actor_node and resource_color == color_id:
                     self.api.pick_up_resource(actor_id, resource_id)
-                    Logger.info("Agent", f"Pickup: actor{actor_id} resource{resource_id}.")        
+                    Logger.info("PICKUP", f"Actor{actor_id} resource{resource_id}.")        
             
         elif action == 'setup_site':
             (actor_id, node_id, task_id) = params
@@ -157,7 +158,7 @@ class Assignment_Agent(Agent):
             
             if target_node == node_id == actor_node:
                 self.api.start_site(actor_id, task_id)
-                Logger.info("Agent", f"Start site: actor{actor_id} node{actor_node} task{task_id}.")
+                Logger.info("START SITE", f"Actor{actor_id} node{actor_node} task{task_id}.")
 
         elif action == 'deposit':
             (actor_id, task_id, node_id, color_id) = params
@@ -170,7 +171,7 @@ class Assignment_Agent(Agent):
                 resource_color = self.api.get_field(resource_id, 'colour')
                 if target_node == node_id == actor_node and resource_color == color_id:
                     self.api.deposit_resources(actor_id, site_id, resource_id)
-                    Logger.info("Agent", f"Deposit: actor{actor_id} site{site_id} resource{resource_id}.")
+                    Logger.info("DEPOSIT", f"Actor{actor_id} site{site_id} resource{resource_id}.")
                     
         elif action == 'construct_building':
             (actor_id, task_id, node_id) = params
@@ -180,7 +181,7 @@ class Assignment_Agent(Agent):
 
             if target_node == node_id == actor_node:
                 self.api.construct_at(actor_id, site_id)
-                Logger.info("Agent", f"Construct: actor{actor_id} site{site_id}.")
+                Logger.info("CONSTRUCT", f"Actor{actor_id} site{site_id}.")
             
         else:
             print('Invalid action')

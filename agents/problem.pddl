@@ -52,74 +52,74 @@
 
     ;; set the variables site_not_created
 	(is_task_available t23)
-	(site_not_created n15 t23)
+	(site_not_created t23 n15)
 	(building_not_built t23 n15)
 
 	(is_task_available t24)
-	(site_not_created n20 t24)
+	(site_not_created t24 n20)
 	(building_not_built t24 n20)
 
 	(is_task_available t25)
-	(site_not_created n1 t25)
+	(site_not_created t25 n1)
 	(building_not_built t25 n1)
 
 	(is_task_available t26)
-	(site_not_created n15 t26)
+	(site_not_created t26 n15)
 	(building_not_built t26 n15)
 
 	(is_task_available t27)
-	(site_not_created n13 t27)
+	(site_not_created t27 n13)
 	(building_not_built t27 n13)
 
 	(is_task_available t28)
-	(site_not_created n17 t28)
+	(site_not_created t28 n17)
 	(building_not_built t28 n17)
 
 
     ;; set the variables not_carrying
-	(= (carrying_color a29 red) 0)
-	(= (carrying_color a29 blue) 0)
-	(= (carrying_color a29 orange) 0)
-	(= (carrying_color a29 black) 0)
-	(= (carrying_color a29 green) 0)
+	(= (count_of_resource_carried a29 red) 0)
+	(= (count_of_resource_carried a29 blue) 0)
+	(= (count_of_resource_carried a29 orange) 0)
+	(= (count_of_resource_carried a29 black) 0)
+	(= (count_of_resource_carried a29 green) 0)
 
-	(= (carrying_color a31 red) 0)
-	(= (carrying_color a31 blue) 0)
-	(= (carrying_color a31 orange) 0)
-	(= (carrying_color a31 black) 0)
-	(= (carrying_color a31 green) 0)
+	(= (count_of_resource_carried a31 red) 0)
+	(= (count_of_resource_carried a31 blue) 0)
+	(= (count_of_resource_carried a31 orange) 0)
+	(= (count_of_resource_carried a31 black) 0)
+	(= (count_of_resource_carried a31 green) 0)
 
-	(= (carrying_color a30 red) 0)
-	(= (carrying_color a30 blue) 0)
-	(= (carrying_color a30 orange) 0)
-	(= (carrying_color a30 black) 0)
-	(= (carrying_color a30 green) 0)
+	(= (count_of_resource_carried a30 red) 0)
+	(= (count_of_resource_carried a30 blue) 0)
+	(= (count_of_resource_carried a30 orange) 0)
+	(= (count_of_resource_carried a30 black) 0)
+	(= (count_of_resource_carried a30 green) 0)
 
-    ;; set the resource_count function
+    ;; set the individual_resource_required function
 	(= (total_resource_required t23 n15) 5)
-	(= (resource_count t23 red) 1)
-	(= (resource_count t23 black) 1)
-	(= (resource_count t23 green) 3)
+	(= (individual_resource_required t23 red) 1)
+	(= (individual_resource_required t23 black) 1)
+	(= (individual_resource_required t23 green) 3)
 
 	(= (total_resource_required t24 n20) 2)
-	(= (resource_count t24 red) 1)
-	(= (resource_count t24 black) 1)
+	(= (individual_resource_required t24 red) 1)
+	(= (individual_resource_required t24 black) 1)
 
 	(= (total_resource_required t25 n1) 5)
-	(= (resource_count t25 red) 1)
-	(= (resource_count t25 orange) 2)
-	(= (resource_count t25 black) 2)
+	(= (individual_resource_required t25 red) 1)
+	(= (individual_resource_required t25 orange) 2)
+	(= (individual_resource_required t25 black) 2)
 
 	(= (total_resource_required t26 n15) 1)
-	(= (resource_count t26 blue) 1)
+	(= (individual_resource_required t26 blue) 1)
 
 	(= (total_resource_required t27 n13) 2)
-	(= (resource_count t27 red) 1)
-	(= (resource_count t27 orange) 1)
+	(= (individual_resource_required t27 red) 1)
+	(= (individual_resource_required t27 orange) 1)
 
 	(= (total_resource_required t28 n17) 4)
-	(= (resource_count t28 red) 1)
-	(= (resource_count t28 orange) 3)
+	(= (individual_resource_required t28 red) 1)
+	(= (individual_resource_required t28 orange) 3)
 
 )
 

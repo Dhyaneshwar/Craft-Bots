@@ -9,18 +9,22 @@
     )
 
     (:predicates
+
         (actor_location ?a - actor ?l - node)
+
         (is_not_working ?a - actor)
         (is_working ?a - actor ?t - task)
+
+        (pick_resource ?a - actor)
+        (no_resource_to_pick ?a - actor)
+
         (connected ?l1 - node ?l2 - node)
 
         (mine_detail ?m - mine ?l - node ?c - color)
         (resource_location ?t - task ?l - node ?c - color)
-        (pick_resource ?a - actor)
-        (no_resource_to_pick ?a - actor)
         
-        (create_site ?l - node ?t - task)
-        (site_not_created ?l - node ?t - task)
+        (create_site ?t - task ?l - node)
+        (site_not_created ?t - task ?l - node)
         
         (deposited ?a - actor ?c - color ?l - node)
 
@@ -32,8 +36,8 @@
     )
 
     (:functions
-        (resource_count ?t - task ?c - color)
-        (carrying_color ?a - actor ?c - color)
+        (individual_resource_required ?t - task ?c - color)
+        (count_of_resource_carried ?a - actor ?c - color)
         (total_resource_required ?t - task ?l - node)
         (total_resource_in_inventory ?a - actor)
     )
@@ -52,14 +56,14 @@
         )
     )
 
-    ;; when the agent is at a node that contains a mine, the agent produces one resource of the mine's resource type. Then the resource appears on the ground at that node
+    ;; When the actor (without any task assigned) is in mine, then the resource is digged and that task is assigned to the actor
     (:action mine_resource
         :parameters (?a - actor ?m - mine ?l - node ?c - color ?t - task)
         :precondition (and 
             (actor_location ?a ?l) 
             (mine_detail ?m ?l ?c)
             (is_not_working ?a)
-            (> (resource_count ?t ?c) 0)
+            (> (individual_resource_required ?t ?c) 0)
             (is_task_available ?t)
             (no_resource_to_pick ?a)
         )
@@ -74,13 +78,14 @@
         )
     )
 
+    ;; When the actor working on a specific task is in mine, then the resource required for that task is digged
     (:action mine_resource_for_task
         :parameters (?a - actor ?m - mine ?l - node ?c - color ?t - task)
         :precondition (and 
             (actor_location ?a ?l) 
             (mine_detail ?m ?l ?c)
             (is_working ?a ?t)
-            (> (resource_count ?t ?c) 0)
+            (> (individual_resource_required ?t ?c) 0)
             (is_task_not_available ?t)
             (no_resource_to_pick ?a)
         )
@@ -91,7 +96,7 @@
         )
     )
 
-    ;; agent collects a resource on the ground in the same node and adds it to the agent's inventory
+    ;; actor collects the resource from the same node and adds it to its inventory
     (:action pick_up_resource
         :parameters (?a - actor ?l - node ?c - color  ?t - task)
         :precondition (and 
@@ -99,64 +104,62 @@
             (resource_location ?t ?l ?c) 
             (pick_resource ?a)
             (is_working ?a ?t)
-            (> (resource_count ?t ?c) 0)
-            (< (carrying_color ?a ?c) (resource_count ?t ?c))
+            (> (individual_resource_required ?t ?c) 0)
+            (< (count_of_resource_carried ?a ?c) (individual_resource_required ?t ?c))
             (<= (total_resource_in_inventory ?a) 7)
         )
         :effect (and 
             (not (resource_location ?t ?l ?c))
-            (increase (carrying_color ?a ?c) 1)
+            (increase (count_of_resource_carried ?a ?c) 1)
             (increase (total_resource_in_inventory ?a) 1)
             (not (pick_resource ?a))
             (no_resource_to_pick ?a)
         )
     )
     
-    ;; create a new site at the given node and add it to the list of sites
+    ;; create a new site at the node where actor is present
     (:action setup_site
         :parameters (?a - actor ?l - node ?t - task)
         :precondition (and 
             (actor_location ?a ?l) 
-            (site_not_created ?l ?t)
+            (site_not_created ?t ?l)
             (is_working ?a ?t)
             (no_resource_to_pick ?a)
         )
         :effect (and 
-            (create_site ?l ?t) 
-            (not (site_not_created ?l ?t))
+            (create_site ?t ?l) 
+            (not (site_not_created ?t ?l))
         )
     )
 
-    ;; agent removes one resource from its inventory and adds it to a site at the current node. 
-    ;; resources cannot be recovered once deposited into a site
+    ;; actor pops one resource from its inventory and adds it to a site at the current node. Deposited resources cannot be recovered.
     (:action deposit
         :parameters (?a - actor ?t - task ?l - node ?c - color)
         :precondition (and 
             (actor_location ?a ?l) 
-            (create_site ?l ?t)
+            (create_site ?t ?l)
             (is_working ?a ?t)
             (> (total_resource_in_inventory ?a) 0)
-            (> (resource_count ?t ?c) 0)
-            (> (carrying_color ?a ?c) 0)
+            (> (individual_resource_required ?t ?c) 0)
+            (> (count_of_resource_carried ?a ?c) 0)
             (> (total_resource_required ?t ?l) 0)
             (no_resource_to_pick ?a)
         )
         :effect (and 
             (deposited ?a ?c ?l) 
             (decrease (total_resource_in_inventory ?a) 1)
-            (decrease (resource_count ?t ?c) 1)
-            (decrease (carrying_color ?a ?c) 1)
+            (decrease (individual_resource_required ?t ?c) 1)
+            (decrease (count_of_resource_carried ?a ?c) 1)
             (decrease (total_resource_required ?t ?l) 1)
         )
     )
 
-    ;; progresses the completion of a site at the current node. The completion is bounded by the fraction of required resources 
-    ;; that have been deposited. Once complete, the site will transform into a completed building
+    ;; Once all the needed the resources are available, the construction is initiated and completed.
     (:action construct_building
         :parameters (?a - actor ?t - task ?l - node)
         :precondition (and 
             (is_working ?a ?t)
-            (create_site ?l ?t) 
+            (create_site ?t ?l) 
             (actor_location ?a ?l) 
             (= (total_resource_required ?t ?l) 0)
             (building_not_built ?t ?l)
