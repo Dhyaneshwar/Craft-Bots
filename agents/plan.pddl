@@ -1,136 +1,181 @@
-(define(problem craft-bots-prob)
-
-(:domain craft-bots)
-
-(:objects
-	;; Declaring the objects for the problem
-	a31 a30 a32 - actor
-	t24 t25 t26 t27 t28 t29 - task
-	n0 n1 n3 n6 n9 n11 n13 n15 n17 n20 - node
-	m33 m34 m36 m35 m37 - mine
-	red blue orange black green - color
-)
-
-(:init
-	;; setting the initial node for each actor
-	(actor_location a31 n0)
-	(is_not_working a31)
-	(no_resource_to_pick a31)
-	(= (total_resource_in_inventory a31) 0)
-
-	(actor_location a30 n13)
-	(is_not_working a30)
-	(no_resource_to_pick a30)
-	(= (total_resource_in_inventory a30) 0)
-
-	(actor_location a32 n15)
-	(is_not_working a32)
-	(no_resource_to_pick a32)
-	(= (total_resource_in_inventory a32) 0)
-
-
-	;; setting the connection between each nodes
-	(connected n1 n0)	(connected n0 n1)
-	(connected n3 n0)	(connected n0 n3)
-	(connected n6 n0)	(connected n0 n6)
-	(connected n3 n1)	(connected n1 n3)
-	(connected n6 n3)	(connected n3 n6)
-	(connected n9 n6)	(connected n6 n9)
-	(connected n11 n9)	(connected n9 n11)
-	(connected n13 n11)	(connected n11 n13)
-	(connected n15 n13)	(connected n13 n15)
-	(connected n17 n13)	(connected n13 n17)
-	(connected n20 n13)	(connected n13 n20)
-	(connected n17 n15)	(connected n15 n17)
-	(connected n20 n15)	(connected n15 n20)
-	(connected n20 n17)	(connected n17 n20)
-
-	;; setting the mines details
-	(mine_detail m33 n0 red)
-	(mine_detail m34 n0 blue)
-	(mine_detail m36 n0 black)
-	(mine_detail m35 n1 orange)
-	(mine_detail m37 n1 green)
-
-	;; set the variables to track the progress of the tasks
-	(is_task_available t24)
-	(site_not_created t24 n20)
-	(building_not_built t24 n20)
-
-	(is_task_available t25)
-	(site_not_created t25 n0)
-	(building_not_built t25 n0)
-
-	(is_task_available t26)
-	(site_not_created t26 n0)
-	(building_not_built t26 n0)
-
-	(is_task_available t27)
-	(site_not_created t27 n1)
-	(building_not_built t27 n1)
-
-	(is_task_available t28)
-	(site_not_created t28 n1)
-	(building_not_built t28 n1)
-
-	(is_task_available t29)
-	(site_not_created t29 n9)
-	(building_not_built t29 n9)
-
-
-	;; set function to count the number of resources carried by the actor
-	(= (count_of_resource_carried a31 red) 0)
-	(= (count_of_resource_carried a31 blue) 0)
-	(= (count_of_resource_carried a31 orange) 0)
-	(= (count_of_resource_carried a31 black) 0)
-	(= (count_of_resource_carried a31 green) 0)
-
-	(= (count_of_resource_carried a30 red) 0)
-	(= (count_of_resource_carried a30 blue) 0)
-	(= (count_of_resource_carried a30 orange) 0)
-	(= (count_of_resource_carried a30 black) 0)
-	(= (count_of_resource_carried a30 green) 0)
-
-	(= (count_of_resource_carried a32 red) 0)
-	(= (count_of_resource_carried a32 blue) 0)
-	(= (count_of_resource_carried a32 orange) 0)
-	(= (count_of_resource_carried a32 black) 0)
-	(= (count_of_resource_carried a32 green) 0)
-
-	;; set function to count total and individual resources required for a task
-	(= (total_resource_required t24 n20) 2)
-	(= (individual_resource_required t24 green) 2)
-
-	(= (total_resource_required t25 n0) 4)
-	(= (individual_resource_required t25 red) 1)
-	(= (individual_resource_required t25 blue) 1)
-	(= (individual_resource_required t25 black) 1)
-	(= (individual_resource_required t25 green) 1)
-
-	(= (total_resource_required t26 n0) 2)
-	(= (individual_resource_required t26 green) 2)
-
-	(= (total_resource_required t27 n1) 2)
-	(= (individual_resource_required t27 orange) 2)
-
-	(= (total_resource_required t28 n1) 3)
-	(= (individual_resource_required t28 orange) 1)
-	(= (individual_resource_required t28 black) 2)
-
-	(= (total_resource_required t29 n9) 3)
-	(= (individual_resource_required t29 red) 1)
-	(= (individual_resource_required t29 blue) 1)
-	(= (individual_resource_required t29 green) 1)
-
-)
-
-(:goal
-	;; setting the goal for each task
-	(and
-		(building_built t24 n20)
-		(building_built t25 n0)
-		(building_built t26 n0)
-		(building_built t27 n1)
-		(building_built t28 n1)
-		(building_built t29 n9)
-)))
+0.000: (mine_resource a27 t26 n13 black m33)  [0.001]
+0.000: (mine_resource a29 t25 n9 green m34)  [0.001]
+0.000: (move_between_nodes a28 n18 n5)  [0.001]
+0.001: (pick_up_resource a27 t26 n13 black)  [0.001]
+0.001: (pick_up_resource a29 t25 n9 green)  [0.001]
+0.001: (move_between_nodes a28 n5 n7)  [0.001]
+0.002: (move_between_nodes a27 n13 n9)  [0.001]
+0.002: (move_between_nodes a29 n9 n13)  [0.001]
+0.002: (move_between_nodes a28 n7 n9)  [0.001]
+0.003: (setup_site a27 t26 n9)  [0.001]
+0.003: (mine_resource_for_task a29 t25 n13 black m33)  [0.001]
+0.003: (move_between_nodes a28 n9 n13)  [0.001]
+0.004: (pick_up_resource a29 t25 n13 black)  [0.001]
+0.004: (move_between_nodes a27 n9 n7)  [0.001]
+0.004: (mine_resource a28 t24 n13 black m33)  [0.001]
+0.005: (move_between_nodes a29 n13 n16)  [0.001]
+0.005: (move_between_nodes a27 n7 n9)  [0.001]
+0.005: (pick_up_resource a28 t24 n13 black)  [0.001]
+0.006: (move_between_nodes a29 n16 n18)  [0.001]
+0.006: (deposit a27 t26 n9 black)  [0.001]
+0.006: (move_between_nodes a28 n13 n16)  [0.001]
+0.007: (move_between_nodes a29 n18 n5)  [0.001]
+0.007: (move_between_nodes a27 n9 n7)  [0.001]
+0.007: (move_between_nodes a28 n16 n18)  [0.001]
+0.008: (move_between_nodes a29 n5 n3)  [0.001]
+0.008: (move_between_nodes a27 n7 n5)  [0.001]
+0.008: (setup_site a28 t24 n18)  [0.001]
+0.009: (deposit a28 t24 n18 black)  [0.001]
+0.009: (move_between_nodes a29 n3 n1)  [0.001]
+0.009: (move_between_nodes a27 n5 n3)  [0.001]
+0.010: (construct_building a28 t24 n18)  [0.001]
+0.010: (move_between_nodes a29 n1 n0)  [0.001]
+0.010: (move_between_nodes a27 n3 n1)  [0.001]
+0.011: (mine_resource_for_task a27 t26 n1 orange m32)  [0.001]
+0.011: (move_between_nodes a28 n18 n5)  [0.001]
+0.011: (setup_site a29 t25 n0)  [0.001]
+0.012: (deposit a29 t25 n0 green)  [0.001]
+0.012: (pick_up_resource a27 t26 n1 orange)  [0.001]
+0.012: (mine_resource a28 t21 n5 blue m31)  [0.001]
+0.013: (move_between_nodes a27 n1 n3)  [0.001]
+0.013: (pick_up_resource a28 t21 n5 blue)  [0.001]
+0.013: (deposit a29 t25 n0 black)  [0.001]
+0.014: (move_between_nodes a29 n0 n1)  [0.001]
+0.014: (move_between_nodes a27 n3 n5)  [0.001]
+0.014: (move_between_nodes a28 n5 n3)  [0.001]
+0.015: (move_between_nodes a29 n1 n3)  [0.001]
+0.015: (move_between_nodes a27 n5 n7)  [0.001]
+0.015: (move_between_nodes a28 n3 n1)  [0.001]
+0.016: (move_between_nodes a29 n3 n5)  [0.001]
+0.016: (move_between_nodes a27 n7 n9)  [0.001]
+0.016: (setup_site a28 t21 n1)  [0.001]
+0.017: (move_between_nodes a29 n5 n7)  [0.001]
+0.017: (deposit a27 t26 n9 orange)  [0.001]
+0.017: (mine_resource_for_task a28 t21 n1 orange m32)  [0.001]
+0.018: (construct_building a27 t26 n9)  [0.001]
+0.018: (pick_up_resource a28 t21 n1 orange)  [0.001]
+0.018: (move_between_nodes a29 n7 n9)  [0.001]
+0.019: (mine_resource_for_task a29 t25 n9 green m34)  [0.001]
+0.019: (move_between_nodes a27 n9 n7)  [0.001]
+0.019: (deposit a28 t21 n1 orange)  [0.001]
+0.020: (pick_up_resource a29 t25 n9 green)  [0.001]
+0.020: (move_between_nodes a28 n1 n3)  [0.001]
+0.020: (move_between_nodes a27 n7 n5)  [0.001]
+0.021: (move_between_nodes a29 n9 n7)  [0.001]
+0.021: (move_between_nodes a27 n5 n3)  [0.001]
+0.021: (move_between_nodes a28 n3 n5)  [0.001]
+0.022: (move_between_nodes a29 n7 n5)  [0.001]
+0.022: (mine_resource_for_task a28 t21 n5 blue m31)  [0.001]
+0.022: (move_between_nodes a27 n3 n5)  [0.001]
+0.023: (move_between_nodes a29 n5 n3)  [0.001]
+0.023: (pick_up_resource a28 t21 n5 blue)  [0.001]
+0.023: (move_between_nodes a27 n5 n3)  [0.001]
+0.024: (move_between_nodes a29 n3 n1)  [0.001]
+0.024: (move_between_nodes a28 n5 n3)  [0.001]
+0.024: (move_between_nodes a27 n3 n1)  [0.001]
+0.025: (move_between_nodes a29 n1 n0)  [0.001]
+0.025: (move_between_nodes a28 n3 n1)  [0.001]
+0.025: (mine_resource a27 t23 n1 orange m32)  [0.001]
+0.026: (deposit a28 t21 n1 blue)  [0.001]
+0.026: (move_between_nodes a29 n0 n1)  [0.001]
+0.026: (pick_up_resource a27 t23 n1 orange)  [0.001]
+0.027: (move_between_nodes a27 n1 n3)  [0.001]
+0.027: (deposit a28 t21 n1 blue)  [0.001]
+0.027: (move_between_nodes a29 n1 n0)  [0.001]
+0.028: (move_between_nodes a27 n3 n5)  [0.001]
+0.028: (move_between_nodes a28 n1 n3)  [0.001]
+0.028: (deposit a29 t25 n0 green)  [0.001]
+0.029: (move_between_nodes a27 n5 n7)  [0.001]
+0.029: (move_between_nodes a28 n3 n5)  [0.001]
+0.029: (move_between_nodes a29 n0 n1)  [0.001]
+0.030: (move_between_nodes a27 n7 n9)  [0.001]
+0.030: (move_between_nodes a28 n5 n18)  [0.001]
+0.030: (move_between_nodes a29 n1 n3)  [0.001]
+0.031: (setup_site a27 t23 n9)  [0.001]
+0.031: (move_between_nodes a28 n18 n16)  [0.001]
+0.031: (move_between_nodes a29 n3 n5)  [0.001]
+0.032: (move_between_nodes a27 n9 n13)  [0.001]
+0.032: (move_between_nodes a28 n16 n13)  [0.001]
+0.032: (move_between_nodes a29 n5 n7)  [0.001]
+0.033: (mine_resource_for_task a27 t23 n13 black m33)  [0.001]
+0.033: (mine_resource_for_task a28 t21 n13 black m33)  [0.001]
+0.033: (move_between_nodes a29 n7 n9)  [0.001]
+0.034: (pick_up_resource a27 t23 n13 black)  [0.001]
+0.034: (pick_up_resource a28 t21 n13 black)  [0.001]
+0.034: (move_between_nodes a29 n9 n13)  [0.001]
+0.035: (move_between_nodes a27 n13 n9)  [0.001]
+0.035: (move_between_nodes a28 n13 n16)  [0.001]
+0.035: (mine_resource_for_task a29 t25 n13 black m33)  [0.001]
+0.036: (deposit a27 t23 n9 black)  [0.001]
+0.036: (move_between_nodes a28 n16 n18)  [0.001]
+0.036: (pick_up_resource a29 t25 n13 black)  [0.001]
+0.037: (deposit a27 t23 n9 orange)  [0.001]
+0.037: (move_between_nodes a28 n18 n5)  [0.001]
+0.037: (move_between_nodes a29 n13 n16)  [0.001]
+0.038: (move_between_nodes a27 n9 n7)  [0.001]
+0.038: (move_between_nodes a28 n5 n3)  [0.001]
+0.038: (move_between_nodes a29 n16 n18)  [0.001]
+0.039: (move_between_nodes a27 n7 n5)  [0.001]
+0.039: (move_between_nodes a28 n3 n1)  [0.001]
+0.039: (move_between_nodes a29 n18 n5)  [0.001]
+0.040: (move_between_nodes a27 n5 n3)  [0.001]
+0.040: (deposit a28 t21 n1 black)  [0.001]
+0.040: (move_between_nodes a29 n5 n3)  [0.001]
+0.041: (move_between_nodes a27 n3 n1)  [0.001]
+0.041: (construct_building a28 t21 n1)  [0.001]
+0.041: (move_between_nodes a29 n3 n1)  [0.001]
+0.042: (mine_resource_for_task a27 t23 n1 orange m32)  [0.001]
+0.042: (move_between_nodes a28 n1 n0)  [0.001]
+0.042: (move_between_nodes a29 n1 n0)  [0.001]
+0.043: (pick_up_resource a27 t23 n1 orange)  [0.001]
+0.043: (mine_resource a28 t22 n0 red m30)  [0.001]
+0.043: (deposit a29 t25 n0 black)  [0.001]
+0.044: (move_between_nodes a27 n1 n3)  [0.001]
+0.044: (pick_up_resource a28 t22 n0 red)  [0.001]
+0.044: (construct_building a29 t25 n0)  [0.001]
+0.045: (move_between_nodes a27 n3 n5)  [0.001]
+0.045: (move_between_nodes a28 n0 n1)  [0.001]
+0.046: (move_between_nodes a27 n5 n7)  [0.001]
+0.046: (setup_site a28 t22 n1)  [0.001]
+0.047: (move_between_nodes a27 n7 n9)  [0.001]
+0.047: (move_between_nodes a28 n1 n3)  [0.001]
+0.048: (deposit a27 t23 n9 orange)  [0.001]
+0.048: (move_between_nodes a28 n3 n5)  [0.001]
+0.049: (move_between_nodes a27 n9 n7)  [0.001]
+0.049: (move_between_nodes a28 n5 n7)  [0.001]
+0.050: (move_between_nodes a27 n7 n5)  [0.001]
+0.050: (move_between_nodes a28 n7 n9)  [0.001]
+0.051: (move_between_nodes a27 n5 n3)  [0.001]
+0.051: (mine_resource_for_task a28 t22 n9 green m34)  [0.001]
+0.052: (move_between_nodes a27 n3 n1)  [0.001]
+0.052: (pick_up_resource a28 t22 n9 green)  [0.001]
+0.053: (move_between_nodes a27 n1 n0)  [0.001]
+0.053: (move_between_nodes a28 n9 n7)  [0.001]
+0.054: (mine_resource_for_task a27 t23 n0 red m30)  [0.001]
+0.054: (move_between_nodes a28 n7 n5)  [0.001]
+0.055: (pick_up_resource a27 t23 n0 red)  [0.001]
+0.055: (move_between_nodes a28 n5 n3)  [0.001]
+0.056: (move_between_nodes a27 n0 n1)  [0.001]
+0.056: (move_between_nodes a28 n3 n1)  [0.001]
+0.057: (move_between_nodes a27 n1 n3)  [0.001]
+0.057: (deposit a28 t22 n1 red)  [0.001]
+0.058: (move_between_nodes a27 n3 n5)  [0.001]
+0.058: (deposit a28 t22 n1 green)  [0.001]
+0.059: (move_between_nodes a28 n1 n3)  [0.001]
+0.059: (move_between_nodes a27 n5 n7)  [0.001]
+0.060: (move_between_nodes a28 n3 n5)  [0.001]
+0.060: (move_between_nodes a27 n7 n9)  [0.001]
+0.061: (move_between_nodes a28 n5 n18)  [0.001]
+0.061: (deposit a27 t23 n9 red)  [0.001]
+0.062: (move_between_nodes a28 n18 n16)  [0.001]
+0.062: (construct_building a27 t23 n9)  [0.001]
+0.063: (move_between_nodes a28 n16 n13)  [0.001]
+0.064: (mine_resource_for_task a28 t22 n13 black m33)  [0.001]
+0.065: (pick_up_resource a28 t22 n13 black)  [0.001]
+0.066: (move_between_nodes a28 n13 n16)  [0.001]
+0.067: (move_between_nodes a28 n16 n18)  [0.001]
+0.068: (move_between_nodes a28 n18 n5)  [0.001]
+0.069: (move_between_nodes a28 n5 n3)  [0.001]
+0.070: (move_between_nodes a28 n3 n1)  [0.001]
+0.071: (deposit a28 t22 n1 black)  [0.001]
+0.072: (construct_building a28 t22 n1)  [0.001]
