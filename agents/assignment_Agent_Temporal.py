@@ -10,7 +10,7 @@ from api import agent_api
 from craftbots.entities.building import Building
 from agents.agent import Agent
 
-class Assignment_Agent(Agent):
+class Assignment_Agent_Temporal(Agent):
 
     class STATE:
         READY     = 0
@@ -30,7 +30,7 @@ class Assignment_Agent(Agent):
         super().__init__()
 
         # Set an initial state of being ready.
-        self.state = Assignment_Agent.STATE.READY
+        self.state = Assignment_Agent_Temporal.STATE.READY
 
         # Set the agent to be verbose (printing out commands)
         self.verbose = 1
@@ -54,7 +54,7 @@ class Assignment_Agent(Agent):
         #  Completed, do not need to edit
 
         # If they are ready for instructions
-        if self.state == Assignment_Agent.STATE.READY:
+        if self.state == Assignment_Agent_Temporal.STATE.READY:
            
             # Get a list of tasks and add them to a list
             # check if they are all completed
@@ -65,7 +65,7 @@ class Assignment_Agent(Agent):
             
             # If all tasks completed, set state to waiting
             if (all (tasks)):
-                self.state = Assignment_Agent.STATE.WAITING
+                self.state = Assignment_Agent_Temporal.STATE.WAITING
 
             # if all tasks not completed, need to process
             else:
@@ -75,7 +75,7 @@ class Assignment_Agent(Agent):
                         print(task['id'])
 
                 # Put agent in planning state
-                self.state = Assignment_Agent.STATE.PLANNING
+                self.state = Assignment_Agent_Temporal.STATE.PLANNING
 
                 # Generate Problem and plan and prepare to execute
                 PDDLInterface.writeProblem(world_info=self.world_info)
@@ -87,19 +87,19 @@ class Assignment_Agent(Agent):
                 self.plan = PDDLInterface.readPDDLPlan('agents/plan-temporal.pddl')
 
                 # Set agent to be executing a plan
-                self.state = Assignment_Agent.STATE.EXECUTING
+                self.state = Assignment_Agent_Temporal.STATE.EXECUTING
             
         # If its executing, need to fill in again
-        elif self.state == Assignment_Agent.STATE.EXECUTING:
+        elif self.state == Assignment_Agent_Temporal.STATE.EXECUTING:
             # print('executing')
             # If the plan is zero, i.e. no plan
             if len(self.plan) == 0:
                 # set agent to be ready
-                self.state = Assignment_Agent.STATE.READY
+                self.state = Assignment_Agent_Temporal.STATE.READY
                 # Check all the actors, if any are busy, change state to executing
                 for actor in self.world_info['actors'].values():
                     if actor['state'] != 0:
-                        self.state = Assignment_Agent.STATE.EXECUTING
+                        self.state = Assignment_Agent_Temporal.STATE.EXECUTING
 
             # Otherwise, if a plan exists, 
             else:
@@ -114,12 +114,12 @@ class Assignment_Agent(Agent):
                     # call send function
                     self.send_action(action, params)
                     
-                    self.state = Assignment_Agent.STATE.WAITING
+                    self.state = Assignment_Agent_Temporal.STATE.WAITING
 
         # if its waiting, set it to executing.  completed
-        elif self.state == Assignment_Agent.STATE.WAITING:
+        elif self.state == Assignment_Agent_Temporal.STATE.WAITING:
            # print('waiting, so make it execute')
-            self.state = Assignment_Agent.STATE.EXECUTING
+            self.state = Assignment_Agent_Temporal.STATE.EXECUTING
 
         # finished thinking
         self.thinking = False
