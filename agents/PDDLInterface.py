@@ -1,5 +1,3 @@
-from collections.abc import Set
-from typing import List, Tuple, Union
 import requests
 import subprocess
 
@@ -106,18 +104,19 @@ class PDDLInterface:
                 task_id = str(task['id'])
                 task_node = str(task['node'])
 
-                file.write(tab())
-                file.write(f"(is_task_available t{task_id})")
-                file.write(newline())
+                if not world_info['tasks'][task_id]['completed']:
+                    file.write(tab())
+                    file.write(f"(is_task_available t{task_id})")
+                    file.write(newline())
 
-                file.write(tab())
-                file.write(f"(site_not_created t{task_id} n{task_node})")
-                file.write(newline())
-                
-                file.write(tab())
-                file.write(f"(building_not_built t{task_id} n{task_node})")
-                file.write(newline())
-                file.write(newline())
+                    file.write(tab())
+                    file.write(f"(site_not_created t{task_id} n{task_node})")
+                    file.write(newline())
+                    
+                    file.write(tab())
+                    file.write(f"(building_not_built t{task_id} n{task_node})")
+                    file.write(newline())
+                    file.write(newline())
 
             file.write(newline())
             file.write(tab() + ";; set function to count the number of resources carried by the actor" + newline())
@@ -135,17 +134,18 @@ class PDDLInterface:
                 task_node = str(task['node'])
                 resource_list = task['needed_resources']
 
-                file.write(tab())
-                file.write(f"(= (total_resource_required t{task_id} n{task_node}) {str(sum(resource_list))})")
-                file.write(newline())
+                if not world_info['tasks'][task_id]['completed']:
+                    file.write(tab())
+                    file.write(f"(= (total_resource_required t{task_id} n{task_node}) {str(sum(resource_list))})")
+                    file.write(newline())
 
-                for index, color in enumerate(PDDLInterface.COLOURS):
-                    resource_needed = resource_list[index]
+                    for index, color in enumerate(PDDLInterface.COLOURS):
+                        resource_needed = resource_list[index]
 
-                    if resource_needed>0:
-                        file.write(tab())
-                        file.write(f"(= (individual_resource_required t{task_id} {color}) {str(resource_needed)})")
-                        file.write(newline())
+                        if resource_needed>0:
+                            file.write(tab())
+                            file.write(f"(= (individual_resource_required t{task_id} {color}) {str(resource_needed)})")
+                            file.write(newline())
                 file.write(newline())
 
             file.write(")")
@@ -161,9 +161,9 @@ class PDDLInterface:
             for task in tasks:
                 task_id = str(task['id'])
                 task_node = str(task['node'])
-
-                file.write(tab() * 2)
-                file.write(f"(building_built t{task_id} n{task_node})" + newline())
+                if not world_info['tasks'][task_id]['completed']:
+                    file.write(tab() * 2)
+                    file.write(f"(building_built t{task_id} n{task_node})" + newline())
 
             file.write(")))" + newline())
 
