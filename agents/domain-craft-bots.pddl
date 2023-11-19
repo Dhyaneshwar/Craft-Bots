@@ -55,7 +55,7 @@
     )
 
     ;; When the actor (without any task assigned) is in mine, then the resource is digged and that task is assigned to the actor
-    (:action mine_resource
+    (:action assign_task_and_mine
         :parameters (?a - actor ?t - task ?l - node ?c - color ?m - mine)
         :precondition (and 
             (actor_location ?a ?l) 

@@ -153,7 +153,7 @@ class Assignment_Agent(Agent):
         site_missing = is_site_not_created or site_not_available
         node_resources = self.api.get_field(node_id,'resources')
     
-        if action == 'mine_resource' or action == 'mine_resource_for_task':
+        if action == 'assign_task_and_mine' or action == 'mine_resource_for_task':
             color_id = params[3]
             mine_id = params[4]
             mine_node = self.api.get_field(mine_id, "node")
