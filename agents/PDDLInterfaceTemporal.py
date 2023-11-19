@@ -70,11 +70,6 @@ class PDDLInterface:
                 file.write(f"(= (move_speed a{str(actor['id'])}) 5)")
                 file.write(newline())
 
-                # Actor is initially not working on any task
-                file.write(tab())
-                file.write(f"(is_not_working a{actor_id})")
-                file.write(newline())
-
                 # Number of resources present in Actor's inventory, which is initialy 0
                 file.write(tab())
                 file.write(f"(= (total_resource_in_inventory a{str(actor['id'])}) 0)")
@@ -111,7 +106,6 @@ class PDDLInterface:
                 is_task_completed = task['completed']
 
                 if not is_task_completed:
-                    file.write(tab() + f"(is_task_available t{task_id})" + newline())
                     file.write(tab() + f"(site_not_created t{task_id} n{str(task['node'])})" + newline())
                     file.write(tab() + f"(building_not_built t{task_id} n{task_node})" + newline())
                     file.write(newline())
