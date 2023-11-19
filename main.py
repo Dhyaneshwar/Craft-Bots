@@ -1,6 +1,7 @@
 import argparse
 from agents.rule_based_agent import RBAgent
 from agents.assignment_Agent import Assignment_Agent
+from agents.assignment_Agent_Temporal import Assignment_Agent_Temporal
 from craftbots.simulation import Simulation
 from gui.main_window import CraftBotsGUI
 
@@ -11,7 +12,8 @@ if __name__ == '__main__':
     # arg_parser.add_argument('-f', help="configuration file", type=str, default='craftbots/config/simple_configuration.yaml')
 
     #  changing the configuration file name
-    arg_parser.add_argument('-f', help="configuration file", type=str, default='craftbots/config/2023part1_configuration.yaml')
+    # arg_parser.add_argument('-f', help="configuration file", type=str, default='craftbots/config/2023part1_configuration.yaml')
+    arg_parser.add_argument('-f', help="configuration file", type=str, default='craftbots/config/2023part2_configuration.yaml')
 
     args = arg_parser.parse_args()
 
@@ -21,7 +23,8 @@ if __name__ == '__main__':
     # agent
     # agent = RBAgent()
 
-    agent = Assignment_Agent()
+    # agent = Assignment_Agent()
+    agent = Assignment_Agent_Temporal()
     sim.agents.append(agent)
 
     # GUI

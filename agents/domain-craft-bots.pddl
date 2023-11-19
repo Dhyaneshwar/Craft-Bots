@@ -26,8 +26,6 @@
         (create_site ?t - task ?l - node)
         (site_not_created ?t - task ?l - node)
         
-        (deposited ?a - actor ?c - color ?l - node)
-
         (building_built ?t - task ?l - node)
         (building_not_built ?t - task ?l - node)
 
@@ -146,7 +144,6 @@
             (no_resource_to_pick ?a)
         )
         :effect (and 
-            (deposited ?a ?c ?l) 
             (decrease (total_resource_in_inventory ?a) 1)
             (decrease (individual_resource_required ?t ?c) 1)
             (decrease (count_of_resource_carried ?a ?c) 1)

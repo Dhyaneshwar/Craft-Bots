@@ -70,6 +70,17 @@ class PDDLInterface:
                 file.write(f"(= (move_speed a{str(actor['id'])}) 5)")
                 file.write(newline())
 
+                # Actor is initially not working on any task
+                file.write(tab())
+                file.write(f"(is_not_working a{actor_id})")
+                file.write(newline())
+
+                #  No resource is there to be picked by the actor
+                file.write(tab())
+                file.write(f"(no_resource_to_pick a{actor_id})")
+                file.write(newline())
+
+                # Number of resources present in Actor's inventory, which is initialy 0
                 file.write(tab())
                 file.write(f"(= (total_resource_in_inventory a{str(actor['id'])}) 0)")
                 file.write(newline())
@@ -98,43 +109,51 @@ class PDDLInterface:
                 mine_color = PDDLInterface.COLOURS[mine['colour']]
                 file.write(tab() + f"(mine_detail m{mine_id} n{mine_node} {mine_color})" + newline())
             file.write(newline())
-
-            # set the variables create_site, not_created_site, carrying, not_carrying, deposited, not_deposited
-            for task in world_info['tasks'].values():
-                if not world_info['tasks'][task['id']]['completed']:
-                    for actor in world_info['actors'].values():      
-                        for colour in PDDLInterface.COLOURS:
-                            file.write(tab() + f"(not_carrying a{str(actor['id'])} {colour})" + newline())
-                        file.write(newline())
-            file.write(newline())
-
-            for task in world_info['tasks'].values():
-                if not world_info['tasks'][task['id']]['completed']:
-                    for actor in world_info['actors'].values():
-                        for idx, j in enumerate(PDDLInterface.COLOURS):
-                            file.write(tab())
-                            file.write(f"(not_deposited a{str(actor['id'])} {str(j)} n{str(task['node'])})")
-                            file.write(newline())
-                        file.write(newline())
-            file.write(newline())
                         
-            for task in world_info['tasks'].values():
-                if not world_info['tasks'][task['id']]['completed']:
+            for task in tasks:
+                task_id = str(task['id'])
+                task_node = str(task['node'])
+                is_task_completed = task['completed']
+
+                if not is_task_completed:
+                    file.write(tab() + f"(is_task_available t{task_id})" + newline())
                     file.write(tab() + f"(not (create_site n{str(task['node'])}))" + newline())
                     file.write(tab() + f"(site_not_created n{str(task['node'])})" + newline())
             file.write(newline())
 
-            for task in world_info['tasks'].values():
-                if not world_info['tasks'][task['id']]['completed']:
-                    for idx, j in enumerate(PDDLInterface.COLOURS):
-                        num_needed = task['needed_resources'][idx]
-                        if num_needed > 0:
-                            file.write(tab())
-                            file.write(f"(= (color_count {str(j)} n{str(task['node'])}) {str(num_needed)})" + newline())
             file.write(newline())
+            file.write(tab() + ";; set function to count the number of resources carried by the actor" + newline())
+            for actor in actors:  
+                actor_id = str(actor['id'])
+                for color in PDDLInterface.COLOURS:
+                    file.write(tab())
+                    file.write(f"(= (count_of_resource_carried a{actor_id} {color}) 0)")
+                    file.write(newline())
+                file.write(newline())
+                        
+            file.write(tab() + ";; set function to count total and individual resources required for a task" + newline())
+            for task in tasks:
+                task_id = str(task['id'])
+                task_node = str(task['node'])
+                resource_list = task['needed_resources']
+                is_task_completed = task['completed']
 
-            for actor in world_info['actors'].values():
-                for actor2 in world_info['actors'].values():
+                if not is_task_completed:
+                    file.write(tab())
+                    file.write(f"(= (total_resource_required t{task_id} n{task_node}) {str(sum(resource_list))})")
+                    file.write(newline())
+
+                    for index, color in enumerate(PDDLInterface.COLOURS):
+                        resource_needed = resource_list[index]
+
+                        if resource_needed>0:
+                            file.write(tab())
+                            file.write(f"(= (individual_resource_required t{task_id} {color}) {str(resource_needed)})")
+                            file.write(newline())
+                file.write(newline())
+
+            for actor in actors:
+                for actor2 in actors:
                     if actor['id'] != actor2['id']:
                         file.write(tab() + f"(not-same a{str(actor['id'])} a{str(actor2['id'])})")
                         file.write(tab() + f"(not-same a{str(actor2['id'])} a{str(actor['id'])})" + newline())
@@ -160,9 +179,9 @@ class PDDLInterface:
                 file.write(newline())
             file.write(newline())
 
-            for i in range(0, 9700, 1200):
+            for i in range(0, 20000, 1200):
                 file.write(tab())
-                file.write(f"(at {str(i)} (red_available))" + newline())
+                file.write(f"(at {str(i)} (red_available red))" + newline())
 
             file.write(')')
             file.write(newline())
@@ -173,16 +192,14 @@ class PDDLInterface:
             file.write(tab() + '(and' + newline())
 
             # fetch the tasks from the world info
-            for task in world_info['tasks'].values():
-                if not world_info['tasks'][task['id']]['completed']:
-                    for idx, j in enumerate(PDDLInterface.COLOURS):
-                        num_needed = task['needed_resources'][idx]
-                        if num_needed > 0:
-                            file.write(tab() + tab())
-                            file.write('(= (color_count' + space() + str(j) + space() + 'n' + str(task['node']) + ')' + space() + str(0) + ')' + newline())
-                            # break
-                        # break
-                    break
+            for task in tasks:
+                task_id = str(task['id'])
+                task_node = str(task['node'])
+                is_task_completed = task['completed']
+
+                if not is_task_completed:
+                    file.write(tab() * 2)
+                    file.write(f"(building_built t{task_id} n{task_node})" + newline())
 
             file.write(")))" + newline())
             file.close()
