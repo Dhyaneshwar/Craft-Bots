@@ -11,75 +11,69 @@
     (:predicates 
         (actor_location ?a - actor ?l - node)
         (connected ?l1 - node ?l2 - node)
+
+        (mine_detail ?m - mine ?l - node ?c - color)
         (resource_location ?l - node ?c - color)
         
         (create_site ?l - node)
-        (not_created_site ?l - node)
+        (site_not_created ?l - node)
         
         (carrying ?a - actor ?c - color)
         (not_carrying ?a - actor ?c - color)
-        (mine_detail ?m - mine ?l - node ?c - color)
         
         (deposited ?a - actor ?c - color ?l - node)
         (not_deposited ?a - actor ?c - color ?l - node)
         (not-same ?a1 ?a2 - actor)
+
         (is_orange ?c - color)
         (is_blue ?c - color)
+        (is_red ?c - color)
+        (is_black ?c - color)
+        (is_green ?c - color)
+
         (not_orange ?c - color) 
         (not_blue ?c - color)
+        (not_red ?c - color)
+        (not_black ?c - color)
+        (not_green ?c - color)
         
         (red_available)
-        (not_resource_carrying ?a - actor)
-        (is_red ?c - color)
-        (not_red ?c - color)
-        (not_green ?c - color)
-        (is_black ?c - color)
-        (not_black ?c - color)
-)
+    )
 
     (:functions 
         (color_count ?c - color ?l - node)
         (edge_length ?l1 - node ?l2 - node)
         (move_speed ?a - actor)
-        (mine_duration_blue ?m - mine)
-        (mine_duration_orange ?m - mine)
         (mine_duration ?m - mine)
-)
+        (mine_duration_blue ?m - mine)
+        (total_resource_in_inventory ?a - actor)
+    )
 
     (:durative-action move
-        :parameters (?a - actor ?l1 - node ?l2 - node)
+        :parameters (?a - actor ?l1 ?l2 - node)
         ;; duration determined by actor move speed and edge length between locations
         :duration (= ?duration (/ (edge_length ?l1 ?l2) (move_speed ?a)))
         :condition (and 
-            (at start (and 
-                (actor_location ?a ?l1) (connected ?l1 ?l2))
-            )
-            (over all (and 
-                (connected ?l1 ?l2))
-            )
+            (at start (actor_location ?a ?l1))
+            (over all (connected ?l1 ?l2))
         )
-        :effect (and 
-            (at end (and 
-                (actor_location ?a ?l2) (not (actor_location ?a ?l1)))
-            )
+        :effect (and
+            (at start (not (actor_location ?a ?l1)))
+            (at end (actor_location ?a ?l2))
         )
     )
 
+    ;; create a new site at the node where actor is present
     (:durative-action create-site
         :parameters (?a - actor ?l - node)
         :duration (= ?duration 1)
         :condition (and 
-            (at start (and 
-                (actor_location ?a ?l) (not_created_site ?l))
-            )
-            (over all (and 
-                (actor_location ?a ?l) (not_created_site ?l))
-            )
+            (at start (site_not_created ?l))
+            (over all (actor_location ?a ?l))
         )
         :effect (and 
-            (at end (and 
-                (create_site ?l) (not (not_created_site ?l)))
-            )
+            (at start (not (site_not_created ?l)))
+            (at end (create_site ?l))
         )
     )
     
@@ -90,7 +84,10 @@
         :duration (= ?duration (mine_duration ?m))
         :condition (and 
             (over all (and 
-                (actor_location ?a ?l) (mine_detail ?m ?l ?c) (not_orange ?c) (not_blue ?c))
+                (actor_location ?a ?l) 
+                (mine_detail ?m ?l ?c) 
+                (not_orange ?c) 
+                (not_blue ?c))
             )
         )
         :effect (and 
@@ -107,7 +104,9 @@
         :duration (= ?duration (mine_duration_blue ?m))
         :condition (and 
             (over all (and 
-                (actor_location ?a ?l) (mine_detail ?m ?l ?c) (is_blue ?c) (not_orange ?c))
+                (actor_location ?a ?l) 
+                (mine_detail ?m ?l ?c) 
+                (is_blue ?c))
             )
         )
         :effect (and 
@@ -120,10 +119,14 @@
     ;; orange resource requires multiple actors to mine
     (:durative-action dig-orange
         :parameters (?a1 - actor ?a2 - actor ?m - mine ?l - node ?c - color)
-        :duration (= ?duration (mine_duration_orange ?m))
+        :duration (= ?duration (mine_duration ?m))
         :condition (and 
             (over all (and 
-                (actor_location ?a1 ?l) (not-same ?a1 ?a2) (actor_location ?a2 ?l) (mine_detail ?m ?l ?c) (is_orange ?c) (not_blue ?c))
+                (not-same ?a1 ?a2) 
+                (actor_location ?a1 ?l) 
+                (actor_location ?a2 ?l) 
+                (mine_detail ?m ?l ?c) 
+                (is_orange ?c))
             )
         )
         :effect (and 
@@ -133,60 +136,94 @@
         )
     )
 
-    ;; red resource can only be collected within time interval 0-1200
-    (:durative-action collect-red
-        :parameters (?a - actor ?l - node ?c - color)
-        :duration (= ?duration 1)
-        :condition (and 
-            (at start (and 
-                (actor_location ?a ?l) (resource_location ?l ?c) (not_carrying ?a ?c) (red_available) 
-                (is_red ?c) (not_orange ?c) (not_blue ?c) (not_black ?c))
-            )
-            (over all (and 
-                (resource_location ?l ?c) (not_carrying ?a ?c))
-            )
-        )
-        :effect (and 
-            (at end (and 
-                (carrying ?a ?c) (not (resource_location ?l ?c)) (not (not_carrying ?a ?c)))
-            )
-        )
-    )
-    
-    ;; black resource cannot be carried with any other resource
-    (:durative-action collect-black
-        :parameters (?a - actor ?l - node ?c - color)
-        :duration (= ?duration 1)
-        :condition (and 
-            (at start (and 
-                (actor_location ?a ?l) (resource_location ?l ?c) (not_carrying ?a ?c) (not_resource_carrying ?a) 
-                (is_black ?c) (not_orange ?c) (not_blue ?c) (not_red ?c))
-            )
-            (over all (and 
-                (resource_location ?l ?c) (not_carrying ?a ?c))
-            )
-        )
-        :effect (and 
-            (at end (and 
-                (carrying ?a ?c) (not (resource_location ?l ?c)) (not (not_carrying ?a ?c)) (not (not_resource_carrying ?a)))
-            )
-        )
-    )
-    
     (:durative-action pick-up
         :parameters (?a - actor ?l - node ?c - color)
         :duration (= ?duration 1)
         :condition (and 
             (at start (and 
-                (actor_location ?a ?l) (resource_location ?l ?c) (not_carrying ?a ?c) (not_resource_carrying ?a) (not_black ?c) (not_red ?c))
+                (not_carrying ?a ?c) (not_black ?c) (not_red ?c))
             )
             (over all (and 
-                (resource_location ?l ?c) (not_carrying ?a ?c))
+                    (resource_location ?l ?c) 
+                    (actor_location ?a ?l) 
+                    (<=(total_resource_in_inventory) 7)
+                )
             )
         )
         :effect (and 
+            (at start (and
+                    (not (resource_location ?l ?c)) 
+                    (not (not_carrying ?a ?c))
+                )
+            )
             (at end (and 
-                (carrying ?a ?c) (not (not_carrying ?a ?c)) (not (resource_location ?l ?c)) (not (not_resource_carrying ?a)))
+                    (carrying ?a ?c) 
+                    (increase (total_resource_in_inventory ?a) 1)
+                )
+            )
+        )
+    )
+
+    ;; red resource can only be collected within time interval 0-1200
+    (:durative-action pick-up-red
+        :parameters (?a - actor ?l - node ?c - color)
+        :duration (= ?duration 1)
+        :condition (and 
+            (at start (and 
+                    (not_carrying ?a ?c) 
+                    (red_available) 
+                    (<=(total_resource_in_inventory) 7)
+                )
+            )
+            (over all (and 
+                    (actor_location ?a ?l)
+                    (resource_location ?l ?c) 
+                    (not_carrying ?a ?c)
+                    (is_red ?c)
+                )
+            )
+        )
+        :effect (and
+            (at start (and
+                    (not (resource_location ?l ?c)) 
+                    (not (not_carrying ?a ?c))
+                )
+            )
+            (at end (and
+                    (carrying ?a ?c)
+                    (increase (total_resource_in_inventory ?a) 1)
+                )
+            )
+        )
+    )
+    
+    ;; black resource cannot be carried with any other resource
+    (:durative-action pick-up-black
+        :parameters (?a - actor ?l - node ?c - color)
+        :duration (= ?duration 1)
+        :condition (and 
+            (at start (and 
+                    (not_carrying ?a ?c)
+                    (=(total_resource_in_inventory) 0)
+                )
+            )
+            (over all (and 
+                    (actor_location ?a ?l) 
+                    (resource_location ?l ?c)
+                    (is_black ?c)
+                )
+            )
+        )
+        :effect (and 
+            (at start (and
+                    (not (resource_location ?l ?c)) 
+                    (not (not_carrying ?a ?c))
+                )
+            )
+            (at end (and
+                    (carrying ?a ?c)
+                    (increase (total_resource_in_inventory ?a) 1)
+                )
             )
         )
     )
@@ -196,16 +233,27 @@
         :duration (= ?duration 1)
         :condition (and 
             (at start (and 
-                (actor_location ?a ?l) (carrying ?a ?c) (not_deposited ?a ?c ?l) (create_site ?l))
+                    (carrying ?a ?c) 
+                    (not_deposited ?a ?c ?l)
+                )
             )
             (over all (and 
-                (carrying ?a ?c) (not_deposited ?a ?c ?l))
+                    (actor_location ?a ?l) 
+                    (carrying ?a ?c) 
+                    (create_site ?l)
+                )
             )
         )
         :effect (and 
+            (at start (and
+                    (not (not_deposited ?a ?c ?l)) 
+                    (not (carrying ?a ?c)) 
+                )
+            )
             (at end (and 
-                (deposited ?a ?c ?l) (not (not_deposited ?a ?c ?l)) (not (carrying ?a ?c)) 
-                (not_carrying ?a ?c) (not_resource_carrying ?a))
+                (deposited ?a ?c ?l)
+                (not_carrying ?a ?c)
+                (increase (total_resource_in_inventory ?a) 1))
             )
         )
     )
@@ -214,18 +262,24 @@
         :parameters (?a - actor ?l - node ?c - color)
         :duration (= ?duration 33) ;; construction duration is given by site_max_progress (100) / actor_build_speed (3) 
         :condition (and 
-            (at start (and 
-                (actor_location ?a ?l) (deposited ?a ?c ?l) (> (color_count ?c ?l) 0))
+            (at start 
+                (deposited ?a ?c ?l) 
             )
             (over all (and 
-                (deposited ?a ?c ?l) (> (color_count ?c ?l) 0))
+                    (actor_location ?a ?l) 
+                    (> (color_count ?c ?l) 0)
+                )
             )
         )
         :effect (and 
+            (at start 
+                (not (deposited ?a ?c ?l))
+            )
             (at end (and 
-                (not (deposited ?a ?c ?l)) (decrease (color_count ?c ?l) 1) (not_deposited ?a ?c ?l))
+                    (decrease (color_count ?c ?l) 1) 
+                    (not_deposited ?a ?c ?l)
+                )
             )
         )
     )
-    
 )

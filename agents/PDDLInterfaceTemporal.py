@@ -66,6 +66,15 @@ class PDDLInterface:
                 file.write(f"(actor_location a{actor_id} n{actor_node})")
                 file.write(newline())
 
+                file.write(tab())
+                file.write(f"(= (move_speed a{str(actor['id'])}) 5)")
+                file.write(newline())
+
+                file.write(tab())
+                file.write(f"(= (total_resource_in_inventory a{str(actor['id'])}) 0)")
+                file.write(newline())
+                file.write(newline())
+
             file.write(newline())
             file.write(tab() + ";; setting the connection between each nodes" + newline())
             for edge in world_info['edges'].values():
@@ -77,8 +86,9 @@ class PDDLInterface:
                 file.write(tab() + f"(connected n{node_B} n{node_A})")
                 file.write(newline())
 
-                file.write(tab() + f"(= (edge_length n{node_A} n{node_B}) {edge_length})" + newline())
-                file.write(tab() + f"(= (edge_length n{node_B} n{node_A}) {edge_length})" + newline())
+                file.write(tab() + f"(= (edge_length n{node_A} n{node_B}) {edge_length})")
+                file.write(tab() + f"(= (edge_length n{node_B} n{node_A}) {edge_length})")
+                file.write(newline())
             file.write(newline())
 
             file.write(tab() + ";; setting the mines details" + newline())
@@ -90,38 +100,29 @@ class PDDLInterface:
             file.write(newline())
 
             # set the variables create_site, not_created_site, carrying, not_carrying, deposited, not_deposited
-            file.write(newline())
             for task in world_info['tasks'].values():
                 if not world_info['tasks'][task['id']]['completed']:
                     for actor in world_info['actors'].values():      
-                        for idx, j in enumerate(PDDLInterface.COLOURS):
-                            file.write(tab())
-                            file.write('(not (carrying a' + str(actor['id']) + space() + str(j) + '))' + newline())
-                            file.write(tab())
-                            file.write('(not_carrying a' + str(actor['id']) + space() + str(j) + ')' + newline())
+                        for colour in PDDLInterface.COLOURS:
+                            file.write(tab() + f"(not_carrying a{str(actor['id'])} {colour})" + newline())
                         file.write(newline())
-                    break
+            file.write(newline())
 
             for task in world_info['tasks'].values():
                 if not world_info['tasks'][task['id']]['completed']:
                     for actor in world_info['actors'].values():
                         for idx, j in enumerate(PDDLInterface.COLOURS):
                             file.write(tab())
-                            file.write('(not (deposited a' + str(actor['id']) + space() + str(j) + space() + 'n' + str(task['node']) + '))' + newline())
-                            file.write(tab())
-                            file.write('(not_deposited a' + str(actor['id']) + space() + str(j) + space() + 'n' + str(task['node']) + ')' + newline())
-                            # break
+                            file.write(f"(not_deposited a{str(actor['id'])} {str(j)} n{str(task['node'])})")
+                            file.write(newline())
                         file.write(newline())
-                        # break
-                    break
+            file.write(newline())
                         
             for task in world_info['tasks'].values():
                 if not world_info['tasks'][task['id']]['completed']:
-                    file.write(tab())
-                    file.write(f"(not (create_site n{str(task['node'])}))" + newline())
-                    file.write(tab())
-                    file.write(f"(not_created_site n{str(task['node'])})" + newline())
-                    break
+                    file.write(tab() + f"(not (create_site n{str(task['node'])}))" + newline())
+                    file.write(tab() + f"(site_not_created n{str(task['node'])})" + newline())
+            file.write(newline())
 
             for task in world_info['tasks'].values():
                 if not world_info['tasks'][task['id']]['completed']:
@@ -130,20 +131,14 @@ class PDDLInterface:
                         if num_needed > 0:
                             file.write(tab())
                             file.write(f"(= (color_count {str(j)} n{str(task['node'])}) {str(num_needed)})" + newline())
-                            # break
-                        # break
-                    break
+            file.write(newline())
 
             for actor in world_info['actors'].values():
                 for actor2 in world_info['actors'].values():
                     if actor['id'] != actor2['id']:
-                        file.write(tab())
-                        file.write(f"(not-same a{str(actor['id'])} a{str(actor2['id'])})" + newline())
-                        file.write(tab())
-                        file.write(f"(not-same a{str(actor2['id'])} a{str(actor['id'])})" + newline())
-                    else:
-                        file.write(tab())
-                        file.write(f"(not (not-same a{str(actor['id'])} a{str(actor2['id'])}))" + newline())
+                        file.write(tab() + f"(not-same a{str(actor['id'])} a{str(actor2['id'])})")
+                        file.write(tab() + f"(not-same a{str(actor2['id'])} a{str(actor['id'])})" + newline())
+            file.write(newline())
 
             # blue resource takes twice as long to mine
             blue_resource = PDDLInterface.COLOURS.index('blue')
@@ -153,52 +148,21 @@ class PDDLInterface:
                 if color_id == blue_resource:
                     file.write(tab())
                     file.write(f"(= (mine_duration_blue m{str(mine['id'])}) {str(33 * 2)})" + newline())
-                elif color_id == orange_resource:
-                    file.write(tab())
-                    file.write(f"(= (mine_duration_orange m{str(mine['id'])}) {str(33)})" + newline())
                 else:
                     file.write(tab())
                     file.write(f"(= (mine_duration m{str(mine['id'])}) {str(33)})" + newline())
+            file.write(newline())
 
-            for colour in PDDLInterface.COLOURS:
-                if colour == 'orange':
-                    file.write(tab() + f"(is_orange {str(colour)})" + newline())
-                    file.write(tab() + f"(not_blue {str(colour)})" + newline())
-                    file.write(tab() + f"(not_red {str(colour)})" + newline())
-                    file.write(tab() + f"(not_black {str(colour)})" + newline())
-                elif colour == 'blue':
-                    file.write(tab() + f"(is_blue {str(colour)})" + newline())
-                    file.write(tab() + f"(not_orange {str(colour)})" + newline())
-                    file.write(tab() + f"(not_black {str(colour)})" + newline())
-                    file.write(tab() + f"(not_red {str(colour)})" + newline())
-                elif colour == 'black':
-                    file.write(tab() + f"(is_black {str(colour)})" + newline())
-                    file.write(tab() + f"(not_orange {str(colour)})" + newline())
-                    file.write(tab() + f"(not_blue {str(colour)})" + newline())
-                    file.write(tab() + f"(not_red {str(colour)})" + newline())
-                elif colour == 'red':
-                    file.write(tab() + f"(is_red {str(colour)})" + newline())
-                    file.write(tab() + f"(not_orange {str(colour)})" + newline())
-                    file.write(tab() + f"(not_blue {str(colour)})" + newline())
-                    file.write(tab() + f"(not_black {str(colour)})" + newline())
-                else:
-                    file.write(tab() + f"(not_black {str(colour)})" + newline())
-                    file.write(tab() + f"(not_orange {str(colour)})" + newline())
-                    file.write(tab() + f"(not_blue {str(colour)})" + newline())
-                    file.write(tab() + f"(not_red {str(colour)})" + newline())
+            for colour1 in PDDLInterface.COLOURS:
+                for colour2 in PDDLInterface.COLOURS:
+                    prefix = "is_" if colour1 == colour2 else "not_"
+                    file.write(tab() + f"({prefix}{colour2} {colour1})" + newline())
+                file.write(newline())
+            file.write(newline())
 
-            # actor move speed
-            for actor in world_info['actors'].values():
-                file.write(tab())
-                file.write(f"(= (move_speed a{str(actor['id'])}) 5)" + newline())
-
-            for i in range(0, 6000, 1200):
+            for i in range(0, 9700, 1200):
                 file.write(tab())
                 file.write(f"(at {str(i)} (red_available))" + newline())
-
-            for actor in world_info['actors'].values():
-                file.write(tab())
-                file.write(f"(not_resource_carrying a{str(actor['id'])})" + newline())
 
             file.write(')')
             file.write(newline())
