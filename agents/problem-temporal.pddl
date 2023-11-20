@@ -5,7 +5,7 @@
 (:objects
 	a28 a26 a27 - actor
 	t25 t26 t27 - task
-	n0 n1 n3 n5 n7 n9 n11 n14 n19 n22 - location
+	n0 n1 n3 n5 n7 n9 n11 n14 n19 n22 - node
 	m32 m31 m29 m33 m30 - mine
 	red blue orange black green - color
 )
@@ -97,7 +97,7 @@
 	(= (mine_duration m31) 33)
 	(= (mine_duration m29) 33)
 	(= (mine_duration m33) 33)
-	(= (mine_duration_blue m30) 66)
+	(= (mine_duration m30) 66)
 
 	(is_red red)
 	(is_blue blue)

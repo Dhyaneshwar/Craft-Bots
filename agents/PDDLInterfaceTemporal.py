@@ -67,7 +67,11 @@ class PDDLInterface:
                 file.write(newline())
 
                 file.write(tab())
-                file.write(f"(= (move_speed a{str(actor['id'])}) 5)")
+                file.write(f"(is_idle a{actor_id})")
+                file.write(newline())
+
+                file.write(tab())
+                file.write(f"(= (move_speed a{actor_id}) 5)")
                 file.write(newline())
 
                 # Number of resources present in Actor's inventory, which is initialy 0
@@ -97,31 +101,33 @@ class PDDLInterface:
                 mine_id = str(mine['id'])
                 mine_node = str(mine['node'])
                 mine_color = PDDLInterface.COLOURS[mine['colour']]
-                file.write(tab() + f"(mine_detail m{mine_id} n{mine_node} {mine_color})" + newline())
-            file.write(newline())
-                        
-            for task in tasks:
-                task_id = str(task['id'])
-                task_node = str(task['node'])
-                is_task_completed = task['completed']
+                default_mine_duration = 33
+                blue_mine_duration = default_mine_duration * 2
+                mine_duration = str(blue_mine_duration) if mine_color == 'blue' else str(default_mine_duration)
 
-                if not is_task_completed:
-                    file.write(tab() + f"(site_not_created t{task_id} n{str(task['node'])})" + newline())
-                    file.write(tab() + f"(building_not_built t{task_id} n{task_node})" + newline())
-                    file.write(newline())
+                file.write(tab() + f"(mine_location m{mine_id} n{mine_node})" + newline())
+                file.write(tab() + f"(mine_colour m{mine_id} {mine_color})" + newline())
+                file.write(f"(= (mine_duration_blue m{mine_id}) {mine_duration})" + newline())
+                file.write(newline())
+
 
             file.write(newline())
-
-            file.write(newline())
-            file.write(tab() + ";; set function to count the number of resources carried by the actor" + newline())
+            file.write(tab() + ";; settting a variable to track the resource carried by the actor" + newline())
             for actor in actors:  
                 actor_id = str(actor['id'])
                 for color in PDDLInterface.COLOURS:
-                    file.write(tab())
-                    file.write(f"(= (count_of_resource_carried a{actor_id} {color}) 0)")
-                    file.write(newline())
+                    file.write(tab() + f"(not_carrying a{actor_id} {color})" + newline())
                 file.write(newline())
-                        
+
+            for i in range(len(actors)):
+                j = i
+                while j < len(actors):
+                    if actors[i]['id'] != actors[j]['id']:
+                        file.write(tab() + f"(not-same a{str(actors[i]['id'])} a{str(actors[j]['id'])})")
+                        file.write(tab() + f"(not-same a{str(actors[j]['id'])} a{str(actors[i]['id'])})" + newline())
+                    j += 1
+            file.write(newline())
+
             file.write(tab() + ";; set function to count total and individual resources required for a task" + newline())
             for task in tasks:
                 task_id = str(task['id'])
@@ -130,49 +136,32 @@ class PDDLInterface:
                 is_task_completed = task['completed']
 
                 if not is_task_completed:
+                    file.write(tab() + f"(site_not_created t{task_id} n{task_node})" + newline())
                     file.write(tab())
                     file.write(f"(= (total_resource_required t{task_id} n{task_node}) {str(sum(resource_list))})")
                     file.write(newline())
 
                     for index, color in enumerate(PDDLInterface.COLOURS):
                         resource_needed = resource_list[index]
-
-                        if resource_needed>0:
+                        if resource_needed > 0:
                             file.write(tab())
                             file.write(f"(= (individual_resource_required t{task_id} {color}) {str(resource_needed)})")
                             file.write(newline())
-                file.write(newline())
-
-            for actor in actors:
-                for actor2 in actors:
-                    if actor['id'] != actor2['id']:
-                        file.write(tab() + f"(not-same a{str(actor['id'])} a{str(actor2['id'])})")
-                        file.write(tab() + f"(not-same a{str(actor2['id'])} a{str(actor['id'])})" + newline())
-            file.write(newline())
-
-            # blue resource takes twice as long to mine
-            blue_resource = PDDLInterface.COLOURS.index('blue')
-            orange_resource = PDDLInterface.COLOURS.index('orange')
-            for mine in world_info['mines'].values():
-                color_id = mine['colour']
-                if color_id == blue_resource:
-                    file.write(tab())
-                    file.write(f"(= (mine_duration_blue m{str(mine['id'])}) {str(33 * 2)})" + newline())
-                else:
-                    file.write(tab())
-                    file.write(f"(= (mine_duration m{str(mine['id'])}) {str(33)})" + newline())
-            file.write(newline())
+                    
+                    file.write(tab() + f"(building_not_built t{task_id} n{task_node})" + newline())
+                    file.write(newline())
 
             for colour1 in PDDLInterface.COLOURS:
                 for colour2 in PDDLInterface.COLOURS:
                     prefix = "is_" if colour1 == colour2 else "not_"
                     file.write(tab() + f"({prefix}{colour2} {colour1})" + newline())
                 file.write(newline())
-            file.write(newline())
 
             for i in range(0, 20000, 1200):
                 file.write(tab())
-                file.write(f"(at {str(i)} (red_available red))" + newline())
+                file.write(f"(at {str(i)} (is_red_available red))" + newline())                    
+
+            file.write(newline())
 
             file.write(')')
             file.write(newline())

@@ -5,56 +5,56 @@
     (:requirements :strips :typing :equality :fluents :durative-actions :conditional-effects :negative-preconditions :timed-initial-literals)
 
     (:types
-        actor location resource building site mine edge node task color - object
+        actor node mine task color - object
     )
 
     (:predicates 
-        (actor_location ?a - actor ?l - location)
-        (connected ?l1 - location ?l2 - location)
+        (actor_location ?a - actor ?l - node)
+        (connected ?l1 - node ?l2 - node)
         (is_idle ?a - actor)
 
-        (mine_location ?m - mine ?l - location)
+        (mine_location ?m - mine ?l - node)
         (mine_color ?m - mine ?c - color)
-        (resource_location ?l - location ?c - color)
+        (resource_location ?l - node ?c - color)
 
-        (create_site ?l - location)
-        (site_not_created ?l - location)
+        (create_site ?l - node)
+        (site_not_created ?l - node)
         
         (carrying ?a - actor ?c - color)
         (not_carrying ?a - actor ?c - color)
         
         (not-same ?a1 ?a2 - actor)
 
-        (is_orange ?c - color)
-        (is_blue ?c - color)
         (is_red ?c - color)
+        (is_blue ?c - color)
+        (is_orange ?c - color)
         (is_black ?c - color)
+        (is_green ?c - color)
 
-        (not_orange ?c - color) 
-        (not_blue ?c - color)
         (not_red ?c - color)
-        (not_green ?c - color)
+        (not_blue ?c - color)
+        (not_orange ?c - color) 
         (not_black ?c - color)
+        (not_green ?c - color)
 
         (is_red_available)
 
-        (building_built ?t - task ?l - location)
-        (building_not_built ?t - task ?l - location)
+        (building_built ?t - task ?l - node)
+        (building_not_built ?t - task ?l - node)
 )
 
     (:functions 
-        (edge_length ?l1 - location ?l2 - location)
+        (edge_length ?l1 - node ?l2 - node)
         (move_speed ?a - actor)
-        (mine_duration_blue ?m - mine)
         (mine_duration ?m - mine)
 
         (individual_resource_required ?t - task ?c - color)
-        (total_resource_required ?t - task ?l - location)
+        (total_resource_required ?t - task ?l - node)
         (total_resource_in_inventory ?a - actor)
 )
 
     (:durative-action move
-        :parameters (?a - actor ?l1 - location ?l2 - location)
+        :parameters (?a - actor ?l1 - node ?l2 - node)
         ;; duration determined by actor move speed and edge length between locations
         :duration (= ?duration (/ (edge_length ?l1 ?l2) (move_speed ?a)))
         :condition (and 
@@ -80,7 +80,7 @@
     )
 
     (:durative-action create-site
-        :parameters (?a - actor ?l - location)
+        :parameters (?a - actor ?l - node)
         :duration (= ?duration 3)
         :condition (and 
             (at start (and 
@@ -106,7 +106,7 @@
     
     ;; dig red, black or green resources
     (:durative-action mine_resource
-        :parameters (?a - actor ?m - mine ?l - location ?c - color)
+        :parameters (?a - actor ?m - mine ?l - node ?c - color)
         ;; duration determined by the mine's max progress and actor's mining rate
         :duration (= ?duration (mine_duration ?m))
         :condition (and 
@@ -134,9 +134,8 @@
 
     ;; blue resource takes twice as long to mine
     (:durative-action mine_blue_resource
-        :parameters (?a - actor ?m - mine ?l - location ?c - color)
-        ;; duration determined by the mine's max progress and actor's mining rate
-        :duration (= ?duration (mine_duration_blue ?m))
+        :parameters (?a - actor ?m - mine ?l - node ?c - color)
+        :duration (= ?duration (mine_duration ?m))
         :condition (and 
             (at start (and 
                     (is_blue ?c)
@@ -162,7 +161,7 @@
 
     ;; orange resource requires multiple actors to mine
     (:durative-action mine_orange_resource
-        :parameters (?a1 - actor ?a2 - actor ?m - mine ?l - location ?c - color)
+        :parameters (?a1 - actor ?a2 - actor ?m - mine ?l - node ?c - color)
         :duration (= ?duration (mine_duration ?m))
         :condition (and 
             (at start (and 
@@ -196,7 +195,7 @@
 
     ;; red resource can only be collected within time interval 0-1200
     (:durative-action pick_up_red
-        :parameters (?a - actor ?l - location ?c - color)
+        :parameters (?a - actor ?l - node ?c - color)
         :duration (= ?duration 3)
         :condition (and 
             (at start (and 
@@ -232,7 +231,7 @@
     
     ;; black resource cannot be carried with any other resource
     (:durative-action pick_up_black
-        :parameters (?a - actor ?l - location ?c - color)
+        :parameters (?a - actor ?l - node ?c - color)
         :duration (= ?duration 3)
         :condition (and 
             (at start (and 
@@ -264,7 +263,7 @@
     )
     
     (:durative-action pick-up
-        :parameters (?a - actor ?l - location ?c - color)
+        :parameters (?a - actor ?l - node ?c - color)
         :duration (= ?duration 3)
         :condition (and 
             (at start (and 
@@ -297,7 +296,7 @@
     )
     
     (:durative-action deposit
-        :parameters (?a - actor ?l - location ?c - color ?t - task)
+        :parameters (?a - actor ?l - node ?c - color ?t - task)
         :duration (= ?duration 3)
         :condition (and 
             (at start (and 
@@ -331,7 +330,7 @@
     )
     
     (:durative-action construct
-        :parameters (?a - actor ?l - location ?t - task)
+        :parameters (?a - actor ?l - node ?t - task)
         :duration (= ?duration 33) 
         :condition (and 
             (at start (and 
