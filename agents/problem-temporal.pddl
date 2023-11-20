@@ -1,243 +1,138 @@
-(define(problem craft-bots-temporal-prob)
+(define(problem craft-bots-temporal-problem)
 
 (:domain craft-bots-temporal)
 
 (:objects
-	;; Declaring the objects for the problem
-	a25 a27 a26 - actor
-	t22 t23 t24 - task
-	n0 n1 n3 n5 n7 n9 n13 n15 n17 n20 - node
-	m32 m31 m29 m28 m30 - mine
+	a28 a26 a27 - actor
+	t25 - task
+	n0 n1 n3 n5 n7 n9 n11 n14 n19 n22 - location
+	m32 m31 m29 m33 m30 - mine
 	red blue orange black green - color
 )
-
 (:init
-	;; setting the initial node for each actor
-	(actor_location a25 n0)
-	(= (move_speed a25) 5)
-	(= (total_resource_in_inventory a25) 0)
-
-	(actor_location a27 n3)
-	(= (move_speed a27) 5)
-	(= (total_resource_in_inventory a27) 0)
-
-	(actor_location a26 n13)
-	(= (move_speed a26) 5)
-	(= (total_resource_in_inventory a26) 0)
-
-
-	;; setting the connection between each nodes
-	(connected n1 n0)	(connected n0 n1)
-	(= (edge_length n1 n0) 84)	(= (edge_length n0 n1) 84)
-	(connected n3 n1)	(connected n1 n3)
-	(= (edge_length n3 n1) 81)	(= (edge_length n1 n3) 81)
-	(connected n9 n1)	(connected n1 n9)
-	(= (edge_length n9 n1) 98)	(= (edge_length n1 n9) 98)
-	(connected n5 n3)	(connected n3 n5)
-	(= (edge_length n5 n3) 80)	(= (edge_length n3 n5) 80)
-	(connected n7 n5)	(connected n5 n7)
-	(= (edge_length n7 n5) 73)	(= (edge_length n5 n7) 73)
-	(connected n9 n5)	(connected n5 n9)
-	(= (edge_length n9 n5) 98)	(= (edge_length n5 n9) 98)
-	(connected n9 n7)	(connected n7 n9)
-	(= (edge_length n9 n7) 73)	(= (edge_length n7 n9) 73)
-	(connected n13 n9)	(connected n9 n13)
-	(= (edge_length n13 n9) 88)	(= (edge_length n9 n13) 88)
-	(connected n15 n13)	(connected n13 n15)
-	(= (edge_length n15 n13) 75)	(= (edge_length n13 n15) 75)
-	(connected n17 n13)	(connected n13 n17)
-	(= (edge_length n17 n13) 84)	(= (edge_length n13 n17) 84)
-	(connected n17 n15)	(connected n15 n17)
-	(= (edge_length n17 n15) 82)	(= (edge_length n15 n17) 82)
-	(connected n20 n17)	(connected n17 n20)
-	(= (edge_length n20 n17) 84)	(= (edge_length n17 n20) 84)
-
-	;; setting the mines details
-	(mine_detail m32 n3 green)
-	(mine_detail m31 n5 black)
-	(mine_detail m29 n9 blue)
-	(mine_detail m28 n15 red)
-	(mine_detail m30 n15 orange)
-
-	(not_carrying a25 red)
-	(not_carrying a25 blue)
-	(not_carrying a25 orange)
-	(not_carrying a25 black)
-	(not_carrying a25 green)
-
-	(not_carrying a27 red)
-	(not_carrying a27 blue)
-	(not_carrying a27 orange)
-	(not_carrying a27 black)
-	(not_carrying a27 green)
-
-	(not_carrying a26 red)
-	(not_carrying a26 blue)
-	(not_carrying a26 orange)
-	(not_carrying a26 black)
-	(not_carrying a26 green)
-
-	(not_carrying a25 red)
-	(not_carrying a25 blue)
-	(not_carrying a25 orange)
-	(not_carrying a25 black)
-	(not_carrying a25 green)
-
-	(not_carrying a27 red)
-	(not_carrying a27 blue)
-	(not_carrying a27 orange)
-	(not_carrying a27 black)
-	(not_carrying a27 green)
-
-	(not_carrying a26 red)
-	(not_carrying a26 blue)
-	(not_carrying a26 orange)
-	(not_carrying a26 black)
-	(not_carrying a26 green)
-
-	(not_carrying a25 red)
-	(not_carrying a25 blue)
-	(not_carrying a25 orange)
-	(not_carrying a25 black)
-	(not_carrying a25 green)
-
-	(not_carrying a27 red)
-	(not_carrying a27 blue)
-	(not_carrying a27 orange)
-	(not_carrying a27 black)
-	(not_carrying a27 green)
-
-	(not_carrying a26 red)
-	(not_carrying a26 blue)
-	(not_carrying a26 orange)
-	(not_carrying a26 black)
-	(not_carrying a26 green)
-
-
-	(not_deposited a25 red n0)
-	(not_deposited a25 blue n0)
-	(not_deposited a25 orange n0)
-	(not_deposited a25 black n0)
-	(not_deposited a25 green n0)
-
-	(not_deposited a27 red n0)
-	(not_deposited a27 blue n0)
-	(not_deposited a27 orange n0)
-	(not_deposited a27 black n0)
-	(not_deposited a27 green n0)
-
-	(not_deposited a26 red n0)
-	(not_deposited a26 blue n0)
-	(not_deposited a26 orange n0)
-	(not_deposited a26 black n0)
-	(not_deposited a26 green n0)
-
-	(not_deposited a25 red n1)
-	(not_deposited a25 blue n1)
-	(not_deposited a25 orange n1)
-	(not_deposited a25 black n1)
-	(not_deposited a25 green n1)
-
-	(not_deposited a27 red n1)
-	(not_deposited a27 blue n1)
-	(not_deposited a27 orange n1)
-	(not_deposited a27 black n1)
-	(not_deposited a27 green n1)
-
-	(not_deposited a26 red n1)
-	(not_deposited a26 blue n1)
-	(not_deposited a26 orange n1)
-	(not_deposited a26 black n1)
-	(not_deposited a26 green n1)
-
-	(not_deposited a25 red n15)
-	(not_deposited a25 blue n15)
-	(not_deposited a25 orange n15)
-	(not_deposited a25 black n15)
-	(not_deposited a25 green n15)
-
-	(not_deposited a27 red n15)
-	(not_deposited a27 blue n15)
-	(not_deposited a27 orange n15)
-	(not_deposited a27 black n15)
-	(not_deposited a27 green n15)
-
-	(not_deposited a26 red n15)
-	(not_deposited a26 blue n15)
-	(not_deposited a26 orange n15)
-	(not_deposited a26 black n15)
-	(not_deposited a26 green n15)
-
-	(not (create_site n0))
-	(site_not_created n0)
-
-	(not (create_site n1))
-	(site_not_created n1)
+	(actor_location a28 n1)
+	(= (move_speed a28) 5)
+	(is_idle a28)
 	
-	(not (create_site n15))
-	(site_not_created n15)
+	(actor_location a26 n1)
+	(= (move_speed a26) 5)
+	(is_idle a26)
+	
+	(actor_location a27 n1)
+	(= (move_speed a27) 5)
+	(is_idle a27)
 
-	(= (color_count red n0) 2)
-	(= (color_count black n1) 2)
-	(= (color_count orange n15) 1)
-	(= (color_count black n15) 1)
-	(= (color_count green n15) 1)
+	(connected n1 n0)	(connected n0 n1)
+	(= (edge_length n1 n0) 93)	(= (edge_length n0 n1) 93)
+	(connected n3 n1)	(connected n1 n3)
+	(= (edge_length n3 n1) 84)	(= (edge_length n1 n3) 84)
+	(connected n14 n1)	(connected n1 n14)
+	(= (edge_length n14 n1) 66)	(= (edge_length n1 n14) 66)
+	(connected n19 n1)	(connected n1 n19)
+	(= (edge_length n19 n1) 85)	(= (edge_length n1 n19) 85)
+	(connected n5 n3)	(connected n3 n5)
+	(= (edge_length n5 n3) 79)	(= (edge_length n3 n5) 79)
+	(connected n14 n3)	(connected n3 n14)
+	(= (edge_length n14 n3) 58)	(= (edge_length n3 n14) 58)
+	(connected n7 n5)	(connected n5 n7)
+	(= (edge_length n7 n5) 78)	(= (edge_length n5 n7) 78)
+	(connected n11 n5)	(connected n5 n11)
+	(= (edge_length n11 n5) 79)	(= (edge_length n5 n11) 79)
+	(connected n14 n5)	(connected n5 n14)
+	(= (edge_length n14 n5) 76)	(= (edge_length n5 n14) 76)
+	(connected n9 n7)	(connected n7 n9)
+	(= (edge_length n9 n7) 83)	(= (edge_length n7 n9) 83)
+	(connected n11 n9)	(connected n9 n11)
+	(= (edge_length n11 n9) 82)	(= (edge_length n9 n11) 82)
+	(connected n14 n11)	(connected n11 n14)
+	(= (edge_length n14 n11) 83)	(= (edge_length n11 n14) 83)
+	(connected n22 n11)	(connected n11 n22)
+	(= (edge_length n22 n11) 80)	(= (edge_length n11 n22) 80)
+	(connected n19 n14)	(connected n14 n19)
+	(= (edge_length n19 n14) 83)	(= (edge_length n14 n19) 83)
+	(connected n22 n19)	(connected n19 n22)
+	(= (edge_length n22 n19) 89)	(= (edge_length n19 n22) 89)
 
-	(not-same a25 a27)	(not-same a27 a25)
-	(not-same a25 a26)	(not-same a26 a25)
-	(not-same a27 a25)	(not-same a25 a27)
-	(not-same a27 a26)	(not-same a26 a27)
-	(not-same a26 a25)	(not-same a25 a26)
+	(mine_location m32 n0)
+	(mine_color m32 black)
+
+	(mine_location m31 n1)
+	(mine_color m31 orange)
+	
+	(mine_location m29 n9)
+	(mine_color m29 red)
+	
+	(mine_location m33 n11)
+	(mine_color m33 green)
+	
+	(mine_location m30 n19)
+	(mine_color m30 blue)
+
+	(not_carrying a28 red)
+	(not_carrying a28 blue)
+	(not_carrying a28 orange)
+	(not_carrying a28 black)
+	(not_carrying a28 green)
+
+	(not_carrying a26 red)
+	(not_carrying a26 blue)
+	(not_carrying a26 orange)
+	(not_carrying a26 black)
+	(not_carrying a26 green)
+
+	(not_carrying a27 red)
+	(not_carrying a27 blue)
+	(not_carrying a27 orange)
+	(not_carrying a27 black)
+	(not_carrying a27 green)
+
 	(not-same a26 a27)	(not-same a27 a26)
+	(not-same a26 a28)	(not-same a28 a26)
+	(not-same a27 a28)	(not-same a28 a27)
 
 	(= (mine_duration m32) 33)
 	(= (mine_duration m31) 33)
-	(= (mine_duration_blue m29) 66)
-	(= (mine_duration m28) 33)
-	(= (mine_duration m30) 33)
+	(= (mine_duration m29) 33)
+	(= (mine_duration m33) 33)
+	(= (mine_duration_blue m30) 66)
 
 	(is_red red)
-	(not_blue red)
-	(not_orange red)
-	(not_black red)
-	(not_green red)
+	(is_blue blue)
+	(is_orange orange)
+	(is_black black)
 
 	(not_red blue)
-	(is_blue blue)
-	(not_orange blue)
-	(not_black blue)
-	(not_green blue)
-
 	(not_red orange)
-	(not_blue orange)
-	(is_orange orange)
-	(not_black orange)
-	(not_green orange)
-
-	(not_red black)
-	(not_blue black)
-	(not_orange black)
-	(is_black black)
-	(not_green black)
-
 	(not_red green)
-	(not_blue green)
-	(not_orange green)
-	(not_black green)
-	(is_green green)
+	(not_red black)
 
+	(not_black red)
+	(not_black orange)
+	(not_black green)
+	(not_black blue)
+
+	(not_blue red)
+	(not_blue orange)
+	(not_blue black)
+	(not_blue green)
+
+	(not_orange black)
+	(not_orange blue)
+	(not_orange green)
+	(not_orange red)
 
 	(at 0 (red_available))
-	(at 1200 (red_available))
-	(at 2400 (red_available))
-	(at 3600 (red_available))
-	(at 4800 (red_available))
-	(at 6000 (red_available))
-	(at 7200 (red_available))
-	(at 8400 (red_available))
-	(at 9600 (red_available))
+	(at 12 (red_available))
+	(at 24 (red_available))
+	(at 36 (red_available))
+	(at 48 (red_available))
+
+	(site_not_created n19)
+	(building_not_built orange n19)
+	(= (resource_in_node orange n19) 2)
 )
+
 (:goal
 	(and
-		(= (color_count red n0) 0)
+		(building_built orange n19)
 )))
