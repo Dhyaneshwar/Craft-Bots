@@ -4,7 +4,7 @@
 
 (:objects
 	a28 a26 a27 - actor
-	t25 - task
+	t25 t26 t27 - task
 	n0 n1 n3 n5 n7 n9 n11 n14 n19 n22 - location
 	m32 m31 m29 m33 m30 - mine
 	red blue orange black green - color
@@ -13,14 +13,17 @@
 	(actor_location a28 n1)
 	(= (move_speed a28) 5)
 	(is_idle a28)
+	(= (total_resource_in_inventory a28) 0)
 	
 	(actor_location a26 n1)
 	(= (move_speed a26) 5)
 	(is_idle a26)
+	(= (total_resource_in_inventory a26) 0)
 	
 	(actor_location a27 n1)
 	(= (move_speed a27) 5)
 	(is_idle a27)
+	(= (total_resource_in_inventory a27) 0)
 
 	(connected n1 n0)	(connected n0 n1)
 	(= (edge_length n1 n0) 93)	(= (edge_length n0 n1) 93)
@@ -121,18 +124,37 @@
 	(not_orange green)
 	(not_orange red)
 
-	(at 0 (red_available))
-	(at 12 (red_available))
-	(at 24 (red_available))
-	(at 36 (red_available))
-	(at 48 (red_available))
+	(at 0 (is_red_available))
+	(at 1200 (is_red_available))
+	(at 2400 (is_red_available))
+	(at 3600 (is_red_available))
+	(at 4800 (is_red_available))
+	(at 6000 (is_red_available))
 
 	(site_not_created n19)
-	(building_not_built orange n19)
-	(= (resource_in_node orange n19) 2)
+	(= (individual_resource_required t25 orange) 2)
+	(= (total_resource_required t25 n19) 2)
+	(building_not_built t25 n19)
+
+	(site_not_created n1)
+	(= (individual_resource_required t26 black) 1)
+	(= (individual_resource_required t26 red) 1)
+	(= (total_resource_required t26 n1) 2)
+	(building_not_built t26 n1)
+
+	(site_not_created n22)
+	(= (individual_resource_required t27 blue) 1)
+	(= (individual_resource_required t27 green) 1)
+	(= (individual_resource_required t27 red) 1)
+	(= (individual_resource_required t27 black) 2)
+	(= (total_resource_required t27 n22) 5)
+	(building_not_built t27 n22)
 )
 
 (:goal
 	(and
-		(building_built orange n19)
-)))
+		(building_built t25 n19)
+		(building_built t26 n1)
+		(building_built t27 n22)
+	)
+))

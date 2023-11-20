@@ -36,18 +36,21 @@
         (not_green ?c - color)
         (not_black ?c - color)
 
-        (red_available)
+        (is_red_available)
 
-        (building_built ?c - color ?l - location)
-        (building_not_built ?c - color ?l - location)
+        (building_built ?t - task ?l - location)
+        (building_not_built ?t - task ?l - location)
 )
 
     (:functions 
-        (resource_in_node ?c - color ?l - location)
         (edge_length ?l1 - location ?l2 - location)
         (move_speed ?a - actor)
         (mine_duration_blue ?m - mine)
         (mine_duration ?m - mine)
+
+        (individual_resource_required ?t - task ?c - color)
+        (total_resource_required ?t - task ?l - location)
+        (total_resource_in_inventory ?a - actor)
 )
 
     (:durative-action move
@@ -102,7 +105,7 @@
     )
     
     ;; dig red, black or green resources
-    (:durative-action dig
+    (:durative-action mine_resource
         :parameters (?a - actor ?m - mine ?l - location ?c - color)
         ;; duration determined by the mine's max progress and actor's mining rate
         :duration (= ?duration (mine_duration ?m))
@@ -130,7 +133,7 @@
     )
 
     ;; blue resource takes twice as long to mine
-    (:durative-action dig-blue
+    (:durative-action mine_blue_resource
         :parameters (?a - actor ?m - mine ?l - location ?c - color)
         ;; duration determined by the mine's max progress and actor's mining rate
         :duration (= ?duration (mine_duration_blue ?m))
@@ -158,7 +161,7 @@
     )
 
     ;; orange resource requires multiple actors to mine
-    (:durative-action dig-orange
+    (:durative-action mine_orange_resource
         :parameters (?a1 - actor ?a2 - actor ?m - mine ?l - location ?c - color)
         :duration (= ?duration (mine_duration ?m))
         :condition (and 
@@ -192,13 +195,13 @@
     )
 
     ;; red resource can only be collected within time interval 0-1200
-    (:durative-action collect-red
+    (:durative-action pick_up_red
         :parameters (?a - actor ?l - location ?c - color)
         :duration (= ?duration 3)
         :condition (and 
             (at start (and 
                     (not_carrying ?a ?c) 
-                    (red_available) 
+                    (is_red_available) 
                     (is_red ?c) 
                     (is_idle ?a)
                 )
@@ -206,6 +209,7 @@
             (over all (and 
                     (resource_location ?l ?c) 
                     (actor_location ?a ?l) 
+                    (< (total_resource_in_inventory ?a) 7)
                 )
             )
         )
@@ -217,6 +221,7 @@
             ) 
             (at end (and 
                     (carrying ?a ?c)
+                    (increase (total_resource_in_inventory ?a) 1)
                     (not (resource_location ?l ?c))
                     (is_idle ?a)
                 )
@@ -226,7 +231,7 @@
     
     
     ;; black resource cannot be carried with any other resource
-    (:durative-action collect-black
+    (:durative-action pick_up_black
         :parameters (?a - actor ?l - location ?c - color)
         :duration (= ?duration 3)
         :condition (and 
@@ -239,6 +244,7 @@
             (over all (and 
                     (actor_location ?a ?l) 
                     (resource_location ?l ?c) 
+                    (= (total_resource_in_inventory ?a) 0)
                 )
             )
         )
@@ -249,6 +255,7 @@
             ))
             (at end (and 
                     (carrying ?a ?c) 
+                    (increase (total_resource_in_inventory ?a) 1)
                     (not (resource_location ?l ?c))
                     (is_idle ?a)
                 )
@@ -270,6 +277,7 @@
             (over all (and 
                     (actor_location ?a ?l) 
                     (resource_location ?l ?c) 
+                    (< (total_resource_in_inventory ?a) 7)
                 )
             )
         )
@@ -280,6 +288,7 @@
             ))
             (at end (and 
                     (carrying ?a ?c) 
+                    (increase (total_resource_in_inventory ?a) 1)
                     (not (resource_location ?l ?c)) 
                     (is_idle ?a)
                 )
@@ -288,7 +297,7 @@
     )
     
     (:durative-action deposit
-        :parameters (?a - actor ?l - location ?c - color)
+        :parameters (?a - actor ?l - location ?c - color ?t - task)
         :duration (= ?duration 3)
         :condition (and 
             (at start (and 
@@ -299,7 +308,9 @@
             (over all (and 
                     (actor_location ?a ?l) 
                     (create_site ?l)    
-                    (> (resource_in_node ?c ?l) 0)
+                    (> (individual_resource_required ?t ?c) 0)
+                    (> (total_resource_required ?t ?l) 0)
+                    (< (total_resource_in_inventory ?a) 7)
                 )
             )
         )
@@ -309,7 +320,9 @@
                 (not (is_idle ?a))
             ))
             (at end (and 
-                    (decrease (resource_in_node ?c ?l) 1) 
+                    (decrease (individual_resource_required ?t ?c) 1) 
+                    (decrease (total_resource_required ?t ?l) 1) 
+                    (decrease (total_resource_in_inventory ?a) 1)
                     (not_carrying ?a ?c)
                     (is_idle ?a)    
                 )
@@ -318,16 +331,16 @@
     )
     
     (:durative-action construct
-        :parameters (?a - actor ?l - location ?c - color)
+        :parameters (?a - actor ?l - location ?t - task)
         :duration (= ?duration 33) 
         :condition (and 
             (at start (and 
                     (is_idle ? a)
-                    (building_not_built ?c ?l)
+                    (building_not_built ?t ?l)
                 )
             )
             (over all (and 
-                    (= (resource_in_node ?c ?l) 0)
+                    (= (total_resource_required ?t ?l) 0)
                     (actor_location ?a ?l) 
                 )
             )
@@ -335,10 +348,10 @@
         :effect (and 
             (at start (and
                 (not ( is_idle ?a))
-                (not (building_not_built ?c ?l))
+                (not (building_not_built ?t ?l))
             ))
             (at end (and 
-                    (building_built ?c ?l)
+                    (building_built ?t ?l)
                     (is_idle ?a)
                 )
             )
