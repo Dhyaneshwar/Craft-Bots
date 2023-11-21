@@ -53,7 +53,7 @@
         (total_resource_in_inventory ?a - actor)
 )
 
-    (:durative-action move
+    (:durative-action move_between_resources
         :parameters (?a - actor ?l1 - node ?l2 - node)
         ;; duration determined by actor move speed and edge length between locations
         :duration (= ?duration (/ (edge_length ?l1 ?l2) (move_speed ?a)))
@@ -79,7 +79,7 @@
         )
     )
 
-    (:durative-action create-site
+    (:durative-action create_site
         :parameters (?a - actor ?l - node)
         :duration (= ?duration 3)
         :condition (and 
@@ -192,9 +192,42 @@
             ))
         )
     )
+    
+    (:durative-action pick_up_resource
+        :parameters (?a - actor ?l - node ?c - color)
+        :duration (= ?duration 3)
+        :condition (and 
+            (at start (and 
+                    (not_carrying ?a ?c) 
+                    (not_black ?c) 
+                    (not_red ?c) 
+                    (is_idle ?a)
+                )
+            )
+            (over all (and 
+                    (actor_location ?a ?l) 
+                    (resource_location ?l ?c) 
+                    (< (total_resource_in_inventory ?a) 7)
+                )
+            )
+        )
+        :effect (and 
+            (at start (and
+                (not (is_idle ?a))
+                (not (not_carrying ?a ?c)) 
+            ))
+            (at end (and 
+                    (carrying ?a ?c) 
+                    (increase (total_resource_in_inventory ?a) 1)
+                    (not (resource_location ?l ?c)) 
+                    (is_idle ?a)
+                )
+            )
+        )
+    )
 
     ;; red resource can only be collected within time interval 0-1200
-    (:durative-action pick_up_red
+    (:durative-action pick_up_red_resource
         :parameters (?a - actor ?l - node ?c - color)
         :duration (= ?duration 3)
         :condition (and 
@@ -230,7 +263,7 @@
     
     
     ;; black resource cannot be carried with any other resource
-    (:durative-action pick_up_black
+    (:durative-action pick_up_black_resource
         :parameters (?a - actor ?l - node ?c - color)
         :duration (= ?duration 3)
         :condition (and 
@@ -256,39 +289,6 @@
                     (carrying ?a ?c) 
                     (increase (total_resource_in_inventory ?a) 1)
                     (not (resource_location ?l ?c))
-                    (is_idle ?a)
-                )
-            )
-        )
-    )
-    
-    (:durative-action pick-up
-        :parameters (?a - actor ?l - node ?c - color)
-        :duration (= ?duration 3)
-        :condition (and 
-            (at start (and 
-                    (not_carrying ?a ?c) 
-                    (not_black ?c) 
-                    (not_red ?c) 
-                    (is_idle ?a)
-                )
-            )
-            (over all (and 
-                    (actor_location ?a ?l) 
-                    (resource_location ?l ?c) 
-                    (< (total_resource_in_inventory ?a) 7)
-                )
-            )
-        )
-        :effect (and 
-            (at start (and
-                (not (is_idle ?a))
-                (not (not_carrying ?a ?c)) 
-            ))
-            (at end (and 
-                    (carrying ?a ?c) 
-                    (increase (total_resource_in_inventory ?a) 1)
-                    (not (resource_location ?l ?c)) 
                     (is_idle ?a)
                 )
             )

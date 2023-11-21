@@ -1,12 +1,7 @@
-import random
 import time
-# set the root path to the project folder
-import sys
-sys.path.append('./')
 from craftbots.log_manager import Logger
 from agents.PDDLInterface import PDDLInterface
 from api import agent_api
-from craftbots.entities.building import Building
 from agents.agent import Agent
 
 class Assignment_Agent(Agent):
