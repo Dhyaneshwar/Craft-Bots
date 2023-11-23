@@ -37,7 +37,7 @@
         (not_black ?c - color)
         (not_green ?c - color)
 
-        (is_red_available)
+        (is_red_available ?c - color)
 
         (building_built ?t - task ?l - node)
         (building_not_built ?t - task ?l - node)
@@ -53,7 +53,8 @@
         (total_resource_in_inventory ?a - actor)
 )
 
-    (:durative-action move_between_resources
+    ;; When two nodes in the graph are linked, the agent can move between them
+    (:durative-action move_between_nodes
         :parameters (?a - actor ?l1 - node ?l2 - node)
         ;; duration determined by actor move speed and edge length between locations
         :duration (= ?duration (/ (edge_length ?l1 ?l2) (move_speed ?a)))
@@ -79,7 +80,8 @@
         )
     )
 
-    (:durative-action create_site
+    ;; create a new site at the node where actor is present
+    (:durative-action setup_site
         :parameters (?a - actor ?l - node)
         :duration (= ?duration 3)
         :condition (and 
@@ -104,7 +106,7 @@
         )
     )
     
-    ;; dig red, black or green resources
+    ;; mine red, black or green resources
     (:durative-action mine_resource
         :parameters (?a - actor ?m - mine ?l - node ?c - color)
         ;; duration determined by the mine's max progress and actor's mining rate
@@ -132,7 +134,7 @@
         )
     )
 
-    ;; blue resource takes twice as long to mine
+    ;; mining blue resource takes twice as long as other mine
     (:durative-action mine_blue_resource
         :parameters (?a - actor ?m - mine ?l - node ?c - color)
         :duration (= ?duration (mine_duration ?m))
@@ -159,7 +161,7 @@
         )
     )
 
-    ;; orange resource requires multiple actors to mine
+    ;; mining orange resource requires multiple actors to mine
     (:durative-action mine_orange_resource
         :parameters (?a1 - actor ?a2 - actor ?m - mine ?l - node ?c - color)
         :duration (= ?duration (mine_duration ?m))
@@ -192,7 +194,8 @@
             ))
         )
     )
-    
+
+    ;; picking the blue, orange or green resources
     (:durative-action pick_up_resource
         :parameters (?a - actor ?l - node ?c - color)
         :duration (= ?duration 3)
@@ -226,14 +229,14 @@
         )
     )
 
-    ;; red resource can only be collected within time interval 0-1200
+    ;; the red resource can only be collected within time interval 0-1200
     (:durative-action pick_up_red_resource
         :parameters (?a - actor ?l - node ?c - color)
         :duration (= ?duration 3)
         :condition (and 
             (at start (and 
                     (not_carrying ?a ?c) 
-                    (is_red_available) 
+                    (is_red_available ?c) 
                     (is_red ?c) 
                     (is_idle ?a)
                 )
@@ -261,8 +264,7 @@
         )
     )
     
-    
-    ;; black resource cannot be carried with any other resource
+    ;; the black resource cannot be picked with any other resource
     (:durative-action pick_up_black_resource
         :parameters (?a - actor ?l - node ?c - color)
         :duration (= ?duration 3)
@@ -295,6 +297,7 @@
         )
     )
     
+    ;; depost the resource in the site
     (:durative-action deposit
         :parameters (?a - actor ?l - node ?c - color ?t - task)
         :duration (= ?duration 3)
@@ -329,7 +332,8 @@
         )
     )
     
-    (:durative-action construct
+    ;; construct the building
+    (:durative-action construct_building
         :parameters (?a - actor ?l - node ?t - task)
         :duration (= ?duration 33) 
         :condition (and 

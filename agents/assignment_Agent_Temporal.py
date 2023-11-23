@@ -54,7 +54,6 @@ class Assignment_Agent_Temporal(Agent):
             # check if they are all completed
             tasks=[]
             for task in self.world_info['tasks'].values():
-                print('task status', task['completed'])
                 tasks.append(task['completed'])
             
             # If all tasks completed, set state to waiting
@@ -146,7 +145,7 @@ class Assignment_Agent_Temporal(Agent):
                 Logger.info("MOVE", f"Actor{actor_id} node{destination}.")
             return
 
-        elif action == 'create_site':
+        elif action == 'setup_site':
             for task in tasks:
                 task_id = task['id']
                 task_node = task['node']
@@ -166,7 +165,6 @@ class Assignment_Agent_Temporal(Agent):
                 self.api.dig_at(actor_id, mine_id)
                 Logger.info("MINE", f"Actor{actor_id} mine{mine_id}.")
             
-        # send 2 actors to dig orange
         elif action == 'mine_orange_resource':
             actor_id_1 = params[0]
             actor_id_2 = params[1]
@@ -206,7 +204,7 @@ class Assignment_Agent_Temporal(Agent):
                         Logger.info("DEPOSIT", f"Actor{actor_id} site{site_id} resource{resource_id}.")
                         break
 
-        elif action == 'construct':
+        elif action == 'construct_building':
             for task in tasks:
                 task_id = task['id']
                 target_node = self.api.get_field(task_id, "node")

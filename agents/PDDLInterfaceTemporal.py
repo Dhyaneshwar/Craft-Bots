@@ -23,8 +23,8 @@ class PDDLInterface:
     @staticmethod
     # Function to write a temporal problem file
     def writeProblem(world_info, problem_file_path="agents/problem-temporal.pddl"):
-        actors = world_info['actors'].values()
-        tasks = world_info['tasks'].values()
+        actors = list(world_info['actors'].values())
+        tasks = list(world_info['tasks'].values())
 
         with open(problem_file_path, "w") as file:
 
@@ -33,7 +33,7 @@ class PDDLInterface:
             file.write("(:domain craft-bots-temporal)" + newline())
             file.write(newline())
 
-        ###################################################### OBJECTS ######################################################
+        # The OBJECTS for the problem is created here 
 
             file.write("(:objects" + newline())
 
@@ -52,7 +52,7 @@ class PDDLInterface:
             file.write(")")
             file.write(newline() * 2)
 
-        ######################################################## INIT ########################################################
+        # The INIT, i.e. initial state, of the problem file is generated here
 
             file.write("(:init" + newline())
 
@@ -106,8 +106,8 @@ class PDDLInterface:
                 mine_duration = str(blue_mine_duration) if mine_color == 'blue' else str(default_mine_duration)
 
                 file.write(tab() + f"(mine_location m{mine_id} n{mine_node})" + newline())
-                file.write(tab() + f"(mine_colour m{mine_id} {mine_color})" + newline())
-                file.write(f"(= (mine_duration_blue m{mine_id}) {mine_duration})" + newline())
+                file.write(tab() + f"(mine_color m{mine_id} {mine_color})" + newline())
+                file.write(tab() + f"(= (mine_duration m{mine_id}) {mine_duration})" + newline())
                 file.write(newline())
 
 
@@ -136,7 +136,7 @@ class PDDLInterface:
                 is_task_completed = task['completed']
 
                 if not is_task_completed:
-                    file.write(tab() + f"(site_not_created t{task_id} n{task_node})" + newline())
+                    file.write(tab() + f"(site_not_created n{task_node})" + newline())
                     file.write(tab())
                     file.write(f"(= (total_resource_required t{task_id} n{task_node}) {str(sum(resource_list))})")
                     file.write(newline())
@@ -166,7 +166,7 @@ class PDDLInterface:
             file.write(')')
             file.write(newline())
 
-        ######################################################## GOAL ########################################################
+        # The GOAL of the problem is defined below
 
             file.write("(:goal" + newline())
             file.write(tab() + '(and' + newline())
