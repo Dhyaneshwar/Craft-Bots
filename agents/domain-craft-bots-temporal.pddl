@@ -1,8 +1,8 @@
-;; domain file for assignment-1 part-2
+;; Domain file for the temporal problem
 
 (define (domain craft-bots-temporal)
 
-    (:requirements :strips :typing :equality :fluents :durative-actions :conditional-effects :negative-preconditions :timed-initial-literals)
+    (:requirements :strips :typing :durative-actions :fluents)
 
     (:types
         actor node mine task color - object

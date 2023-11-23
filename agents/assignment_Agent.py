@@ -29,20 +29,7 @@ class Assignment_Agent(Agent):
         # Set the agent to be verbose (printing out commands)
         self.verbose = 1
 
-
-    # Function to choose the next commands
-    # Main function for writing plans etc.
-    # does not execute anything, is purely for testing plan
-    def get_next_commands_testing(self):
-        # You can use this to test your PDDL
-        PDDLInterface.writeProblem(world_info=self.world_info)
-
-        # Now try to generate a plan
-        PDDLInterface.generatePlan("agents/domain-craft-bots.pddl", "agents/problem.pddl", "agents/plan.pddl", verbose=True)
-        
-
     # A more complete version, which only creates a plan etc if needed
-    # Rename to get_next_commands(self) to use
     def get_next_commands(self):
         #  Completed, do not need to edit
 
@@ -114,6 +101,7 @@ class Assignment_Agent(Agent):
         # finished thinking
         self.thinking = False
 
+    # will calculate the number of resources deposited out of the number of resources that are needed
     def get_remaining_resource(self, task_id, color_id):
         site_id = self.api.get_field(task_id, "site")
         if site_id == None:

@@ -29,22 +29,8 @@ class Assignment_Agent_Temporal(Agent):
         # Set the agent to be verbose (printing out commands)
         self.verbose = 1
 
-
-    # Function to choose the next commands
-    # Main function for writing plans etc.
-    # does not execute anything, is purely for testing plan
+    # A more complete version, which only creates a plan etc
     def get_next_commands(self):
-        return self.get_next_commands_v1()
-        # You can use this to test your PDDL
-        PDDLInterface.writeProblem(world_info=self.world_info)
-
-        # Now try to generate a plan
-        PDDLInterface.generatePlan("agents/domain-craft-bots-temporal.pddl", "agents/problem-temporal.pddl", "agents/plan-temporal.pddl", verbose=True)
-        
-
-    # A more complete version, which only creates a plan etc if needed
-    # Rename to get_next_commands(self) to use
-    def get_next_commands_v1(self):
         #  Completed, do not need to edit
 
         # If they are ready for instructions
@@ -98,7 +84,6 @@ class Assignment_Agent_Temporal(Agent):
             else:
                 # Set our first action
                  action, params = self.plan[0]
-                 print(self.plan[0])
                  # check if any actors are ready
                  if self.world_info['actors'][params[0]]['state'] == 0:
                     # Pop first action off stack
@@ -118,6 +103,7 @@ class Assignment_Agent_Temporal(Agent):
         # finished thinking
         self.thinking = False
 
+    # will calculate the number of resources deposited out of the number of resources that are needed
     def get_remaining_resource(self, task_id):
         site_id = self.api.get_field(task_id, "site")
         if site_id == None:
@@ -172,7 +158,7 @@ class Assignment_Agent_Temporal(Agent):
 
             self.api.dig_at(actor_id_1, orange_mine_id)
             self.api.dig_at(actor_id_2, orange_mine_id)
-            Logger.info("MINE", f"Actor{actor_id_1} and Actor{actor_id_2} mine{mine_id}.")
+            Logger.info("MINE", f"Actor{actor_id_1} and Actor{actor_id_2} mine{orange_mine_id}.")
 
         elif action == 'pick_up_resource' or action == 'pick_up_red_resource' or action == 'pick_up_black_resource':
             (_, node_id, color_id) = params
@@ -186,23 +172,20 @@ class Assignment_Agent_Temporal(Agent):
                     break
 
         elif action == 'deposit':
-            (_, node_id, color_id) = params
+            (_, node_id, color_id, task_id) = params
 
-            for task in tasks:
-                task_id = task['id']
-                task_node = task['node']
-                target_node = self.api.get_field(task_id, "node")
-                site_id = self.api.get_field(task_id, "site")
+            target_node = self.api.get_field(task_id, "node")
+            site_id = self.api.get_field(task_id, "site")
 
-                remaining_resources = self.get_remaining_resource(task_id)
-                deposit_resource = len(remaining_resources) > 0 and remaining_resources[color_id] > 0
-                
-                for resource_id in actor_resources:
-                    resource_color = self.api.get_field(resource_id, 'colour')
-                    if target_node == node_id == actor_node and resource_color == color_id and deposit_resource:
-                        self.api.deposit_resources(actor_id, site_id, resource_id)
-                        Logger.info("DEPOSIT", f"Actor{actor_id} site{site_id} resource{resource_id}.")
-                        break
+            remaining_resources = self.get_remaining_resource(task_id)
+            deposit_resource = len(remaining_resources) > 0 and remaining_resources[color_id] > 0
+            
+            for resource_id in actor_resources:
+                resource_color = self.api.get_field(resource_id, 'colour')
+                if target_node == node_id == actor_node and resource_color == color_id and deposit_resource:
+                    self.api.deposit_resources(actor_id, site_id, resource_id)
+                    Logger.info("DEPOSIT", f"Actor{actor_id} site{site_id} resource{resource_id}.")
+                    break
 
         elif action == 'construct_building':
             for task in tasks:

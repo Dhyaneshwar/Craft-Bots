@@ -1,8 +1,8 @@
-;; domain file for assignment-1 part-1
+;; Domain file for the normal flow
 
 (define (domain craft-bots)
 
-    (:requirements :strips :typing :numeric-fluents :negative-preconditions :disjunctive-preconditions)
+    (:requirements :strips :typing :numeric-fluents)
 
     (:types
         actor node mine task color - object

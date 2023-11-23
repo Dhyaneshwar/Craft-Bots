@@ -14,6 +14,9 @@ def newline():
 def tab():
     return "\t"
 
+# the path for the planner is given below. In order to execute, pls update the path
+optic_path = '/home/mlb23172/bin/optic-cplex'
+
 class PDDLInterface:
 
     COLOURS = ['red', 'blue', 'orange', 'black', 'green']
@@ -217,7 +220,6 @@ class PDDLInterface:
         #     f.write(''.join([act for act in resp['result']['plan']]))
         # f.close()
 
-        optic_path = '/home/mlb23172/bin/optic-cplex'
         response = str(subprocess.run([f'{optic_path}', '-N', f'{domain}', f'{problem}'], stdout=subprocess.PIPE))
         start_index = response.rindex('Solution Found')
 

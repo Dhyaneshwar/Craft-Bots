@@ -14,6 +14,9 @@ def newline():
 def tab():
     return "\t"
 
+# the path for the planner is given below. In order to execute, pls update the path
+optic_path = '/home/mlb23172/bin/optic-cplex'
+
 class PDDLInterface:
 
     COLOURS = ['red', 'blue', 'orange', 'black', 'green']
@@ -32,7 +35,7 @@ class PDDLInterface:
             file.write("(:domain craft-bots)")
             file.write(newline() * 2)
 
-        ###################################################### OBJECTS ######################################################
+        # The OBJECTS for the problem is created here 
 
             file.write("(:objects" + newline())
 
@@ -51,7 +54,7 @@ class PDDLInterface:
             file.write(")")
             file.write(newline() * 2)
 
-        ######################################################## INIT ########################################################
+        # The INIT, i.e. initial state, of the problem file is generated here
 
             file.write("(:init" + newline())
 
@@ -153,7 +156,7 @@ class PDDLInterface:
             file.write(")")
             file.write(newline() * 2)
 
-        ######################################################## GOAL ########################################################
+        # The GOAL of the problem is defined below
 
             file.write("(:goal" + newline())
 
@@ -204,7 +207,6 @@ class PDDLInterface:
         #     f.write(''.join([act for act in resp['result']['plan']]))
         # f.close()
 
-        optic_path = '/home/mlb23172/bin/optic-cplex'
         response = str(subprocess.run([f'{optic_path}', '-N', f'{domain}', f'{problem}'], stdout=subprocess.PIPE))
         start_index = response.rindex('Solution Found')
 
